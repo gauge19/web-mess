@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Test Pong</title>
+  </head>
+  <body>
+    <div id="score">0-0</div>
+    <canvas id="gameCanvas" width="300" height="300"></canvas>
+
+    <style>
+      #gameCanvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      #score {
+        text-align: center;
+        font-size: 140px;
+      }
+    </style>
+  </body>
+
+  <script>
+    const GAME_SPEED = 100;
+    const CANVAS_BORDER_COLOUR = 'black';
+    const CANVAS_BACKGROUND_COLOUR = "white";
+
+    const gameCanvas = document.getElementById("gameCanvas");
+    // Return a two dimensional drawing context
+    const ctx = gameCanvas.getContext("2d");
+
+    main();
+
+    function main() {
+      // If the game ended return early to stop game
+      setTimeout(function onTick() {
+        clearCanvas();
+        // Call game again
+        main();
+      }, GAME_SPEED)
+    }
+
+    function clearCanvas() {
+      //  Select the colour to fill the drawing
+      ctx.fillStyle = CANVAS_BACKGROUND_COLOUR;
+      //  Select the colour for the border of the canvas
+      ctx.strokestyle = CANVAS_BORDER_COLOUR;
+      // Draw a "filled" rectangle to cover the entire canvas
+      ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+      // Draw a "border" around the entire canvas
+      ctx.strokeRect(0, 0, gameCanvas.width, gameCanvas.height);
+    }
+
+  </script>
+
+</html>
