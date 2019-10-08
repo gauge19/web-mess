@@ -131,11 +131,11 @@
     var score_l = 0;
     var score_r = 0;
 
-    var b = Ball(gameCanvas.width/2, gameCanvas.height/2,
+    var b = new Ball(gameCanvas.width/2, gameCanvas.height/2,
                     1, 0, BALL_COLOR, BALL_BORDER_COLOR);
 
-    var pl = Paddle(0, PADDLE_COLOR, PADDLE_BORDER_COLOR);
-    var pr = Paddle(gameCanvas.width-30, PADDLE_COLOR, PADDLE_BORDER_COLOR);
+    var pl = new Paddle(0, PADDLE_COLOR, PADDLE_BORDER_COLOR);
+    var pr = new Paddle(gameCanvas.width-30, PADDLE_COLOR, PADDLE_BORDER_COLOR);
 
     //--------------------------------------------------------------
 
