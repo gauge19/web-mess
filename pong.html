@@ -7,9 +7,9 @@
   </head>
   <body>
 
-    <!--<button onclick="MyFunc()">test button</button>-->
+    <!--<button onclick="console.log(Math.ceil(25.5));">test button</button>-->
     <div id="score">0 - 0</div>
-    <canvas id="gameCanvas" width="900" height="300"></canvas>
+    <canvas id="gameCanvas" width="900" height="450"></canvas>
 
     <style>
 
@@ -33,80 +33,78 @@
 
   <script>
     const GAME_SPEED = 100;
-    const CANVAS_BORDER_COLOUR = 'black';
-    const CANVAS_BACKGROUND_COLOUR = "white";
+    const CANVAS_BORDER_COLOR = 'black';
+    const CANVAS_BACKGROUND_COLOR = "white";
     const BALL_COLOR = 'red';
     const BALL_BORDER_COLOR = 'darkred';
-    const PADDLE_COLOR = 'blue';
-    const PADDLE_BORDER_COLOR = 'darkblue';
+    const PADDLE_COLOR_L = 'blue';
+    const PADDLE_BORDER_COLOR_L = 'darkblue';
+    const PADDLE_COLOR_R = 'green';
+    const PADDLE_BORDER_COLOR_R = 'darkgreen';
 
     // Ball class; one instance will be created
-    function Ball(posx, posy, vx, vy, color, border_color) {
+    function Ball(posx, posy, color, border_color) {
 
-      this.width = 10;
-      this.height = 10;
+      this.width = 15;
+      this.height = this.width;
 
-      this.x = Math.floor(posx-this.width/2);
-      this.y = Math.floor(posy-this.height/2);
+      // original x and y coordinates, "spawnpoint"
+      this.ox = Math.floor(posx-this.width/2);
+      this.oy = Math.floor(posy-this.height/2);
 
-      this.vx = vx;
-      this.vy = vy;
+      this.x;
+      this.y;
+
+      this.vx;
+      this.vy;
 
       this.color = color;
       this.bcolor = border_color;
 
-      this.move = function () {
+      this.move = function (pl, pr) {
         this.x += this.vx;
         this.y += this.vy;
-      }
 
-      this.change_direction = function (vx, vy) {
-        this.vx = vx;
-        this.vy = vy;
-      }
+        console.log("vx: " + this.vx + "; vy: " + this.vy);
 
-      this.get_color = function () {
-        return this.color;
-      }
-      this.get_bcolor = function () {
-        return this.border_color;
-      }
+        // reverse horizontal diretion if ball hits either the paddles
+        if (pl.collide(this)) {
+          this.vx = -this.vx;
+        }
+        if (pr.collide(this)) {
+          this.vx = -this.vx;
+        }
 
-      this.draw = function () {
-        this.ctx.fillStyle = this.color;
-        this.ctx.strokestyle= this.bcolor;
-        this.ctx.fillRect(this.x, this.x, this.width, this.height);
-        this.ctx.strokeRect(this.x, this.y, this.width, this.height);
-      }
+        //reverse vertical diretion if ball hits the top or bottom wall
+        if (this.y <= 0 || (this.y+this.height) >= gameCanvas.height) {
+          this.vy = -this.vy;
+        }
 
-      this.update = function () {
-        // check if the ball is still within the bounds
-
-        //if the ball left the bounds to the north or south, the game is over
-        if (this.y < 0 || this.y > gameCanvas.height) {
-          return false;
-        } else {
-          this.move();
-          return true;
+        // add score to right paddle if ball is to the left of the left paddle
+        if (this.x < 0) {
+          pr.scored();
+          // reset ball position to the spawnpoint
+          this.reset_pos();
+        }
+        // add score to right paddle if ball is to the left of the left paddle
+        if (this.x > gameCanvas.width) {
+          pl.scored();
+          // reset ball position to the spawnpoint
+          this.reset_pos();
         }
       }
-    }
 
-    // Paddle class; two instances will be created, one for each player/side
-    function Paddle(posx, color, bcolor) {
+      this.reset_pos = function () {
+        // reset position to original coordinates and generate new random direction
+        this.x = this.ox;
+        this.y = this.oy;
 
-      this.width = 30;
-      this.height = 300;
-
-      this.x = posx;
-      this.y = 0;
-      this.color = color;
-      this.bcolor = bcolor;
-
-      this.move = function (mx, my) {
-        this.x += mx;
-        this.y += my;
+        this.vx = randint(5, 10);
+        this.vy = randint(1, 5);
       }
+
+      // call the function to initially set position of object
+      this.reset_pos();
 
       this.get_color = function () {
         return this.color;
@@ -117,10 +115,92 @@
 
       this.draw = function () {
         ctx.fillStyle = this.color;
-        ctx.strokestyle= this.bcolor;
-        ctx.fillRect(this.x, this.x, this.width, this.height);
+        ctx.strokestyle = this.bcolor;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.strokeRect(this.x, this.y, this.width, this.height);
       }
+
+      this.draw_circle = function () {
+        // draw the ball as a circle
+
+        // calculate the center of the circle
+        var c = [this.x+(this.width/2), this.y+(this.height/2)];
+        var r = this.width/2;
+
+        ctx.fillStyle = this.color;
+        ctx.strokestyle = this.bcolor;
+
+        ctx.beginPath();
+        ctx.arc(c[0], c[1], r, 0, 2*Math.PI);
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      this.update = function (pl, pr) {
+        // check if the ball is still within the bounds
+
+        //if the ball left the bounds to the north or south, the game is over
+        if (this.y < 0 || this.y > gameCanvas.height) {
+          return false;
+        } else {
+          this.move(pl, pr);
+          return true;
+        }
+      }
+    }
+
+    // Paddle class; two instances will be created, one for each player/side
+    function Paddle(posx, color, bcolor) {
+
+      this.score = 0;
+
+      this.width = 30;
+      this.height = 300;
+
+      this.x = posx;
+      this.y = 0;
+      this.color = color;
+      this.bcolor = bcolor;
+
+      this.move = function (my) {
+        if ((this.y + my) >= 0 && (this.y+this.height+my) <= gameCanvas.height) {
+          this.y += my;
+        }
+        //console.log("y: " + this.y + "; y+height: " + (this.y+this.height));
+      }
+
+      this.get_color = function () {
+        return this.color;
+      }
+      this.get_bcolor = function () {
+        return this.border_color;
+      }
+
+      this.draw = function () {
+        //console.log(this.x + ": " + this.color);
+        ctx.fillStyle = this.color;
+        ctx.strokestyle = this.bcolor;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
+      }
+
+      this.collide = function (obj) {
+        // checks if object "obj" has collided with "this"
+        if (obj.x > this.x && obj.x < (this.x+this.width) &&
+        obj.y > this.y && obj.y < (this.y+this.height)) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+
+      this.scored = function () {
+        this.score += 1;
+        //console.log("x: " + this.x + "; score: " + this.score);
+      }
+
     }
 
     // Get the canvas element
@@ -131,28 +211,33 @@
     var score_l = 0;
     var score_r = 0;
 
-    var b = new Ball(gameCanvas.width/2, gameCanvas.height/2,
-                    1, 0, BALL_COLOR, BALL_BORDER_COLOR);
+    var b = new Ball(gameCanvas.width/2, gameCanvas.height/2, BALL_COLOR, BALL_BORDER_COLOR);
 
-    var pl = new Paddle(0, PADDLE_COLOR, PADDLE_BORDER_COLOR);
-    var pr = new Paddle(gameCanvas.width-30, PADDLE_COLOR, PADDLE_BORDER_COLOR);
+    var pl = new Paddle(0, PADDLE_COLOR_L, PADDLE_BORDER_COLOR_L);
+    var pr = new Paddle(gameCanvas.width-30, PADDLE_COLOR_R, PADDLE_BORDER_COLOR_R);
 
     //--------------------------------------------------------------
 
     var running = true;
     main();
 
+    document.addEventListener("keydown", event_keypress);
+
     function main() {
       if (!running) return;
       setTimeout(function onTick() {
+        document.getElementById('score').innerHTML = pl.score + " - " + pr.score;
         clearCanvas();
 
-        //ball.update();
-        //ball.draw();
-
-        console.log(pl.get_color());
         pl.draw();
         pr.draw();
+
+        b.update(pl, pr);
+        b.draw_circle();
+
+        if (pl.score > 4 || pr.score > 4) {
+          running = false;
+        }
 
         main();
       }, GAME_SPEED)
@@ -160,13 +245,54 @@
 
     function clearCanvas() {
       //  Select the colour to fill the drawing
-      ctx.fillStyle = CANVAS_BACKGROUND_COLOUR;
+      ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
       //  Select the colour for the border of the canvas
-      ctx.strokestyle = CANVAS_BORDER_COLOUR;
+      ctx.strokestyle = CANVAS_BORDER_COLOR;
       // Draw a "filled" rectangle to cover the entire canvas
       ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
       // Draw a "border" around the entire canvas
       ctx.strokeRect(0, 0, gameCanvas.width, gameCanvas.height);
+    }
+
+    function event_keypress(event) {
+      /*
+      const LEFT_KEY = 37;
+      const RIGHT_KEY = 39;
+
+      const A_KEY = 65;
+      const D_KEY = 68;
+      */
+
+      const UP_KEY = 38;
+      const DOWN_KEY = 40;
+
+      const W_KEY = 87;
+      const S_KEY = 83;
+
+      const MOVE_SPEED = 2; //pixels the paddles move at each key press
+
+      const keyPressed = event.keyCode;
+
+      //console.log(keyPressed);
+
+      if (keyPressed === UP_KEY) {
+        pr.move(-MOVE_SPEED);
+      }
+      if (keyPressed === DOWN_KEY) {
+        pr.move(MOVE_SPEED);
+      }
+      if (keyPressed === W_KEY) {
+        pl.move(-MOVE_SPEED);
+      }
+      if (keyPressed === S_KEY) {
+        pl.move(MOVE_SPEED);
+      }
+    }
+
+    function randint(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max-min+1)) + min;;
     }
 
   </script>

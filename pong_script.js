@@ -87,6 +87,11 @@ function Paddle(posx, color, bcolor) {
     ctx.fillRect(this.x, this.x, this.width, this.height);
     ctx.strokeRect(this.x, this.y, this.width, this.height);
   }
+
+  this.scored = function () {
+    this.score += 1;
+    console.log("x: " + this.x + "; score: " + this.score);
+  }
 }
 
 // Get the canvas element
