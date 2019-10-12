@@ -7,7 +7,7 @@
   </head>
   <body>
 
-    <!--<button onclick="console.log(Math.ceil(25.5));">test button</button>-->
+    <!--<button onclick="'hallo'.forEach(console.log());">test button</button>-->
     <div id="score">0 - 0</div>
     <canvas id="gameCanvas" width="900" height="450"></canvas>
 
@@ -121,6 +121,8 @@
       }
 
       this.draw_circle = function () {
+
+        console.log("draw ball");
         // draw the ball as a circle
 
         // calculate the center of the circle
@@ -178,6 +180,7 @@
       }
 
       this.draw = function () {
+        console.log("draw paddle, x: " + this.x);
         //console.log(this.x + ": " + this.color);
         ctx.fillStyle = this.color;
         ctx.strokestyle = this.bcolor;
