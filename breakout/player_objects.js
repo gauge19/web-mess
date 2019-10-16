@@ -69,9 +69,6 @@ class Ball extends RectangularObject {
   }
 
   collision_check () {
-    var tx = this.x+this.width;
-    var ty = this.y+this.height;
-
     // checks for collsion with every brick
     for (var c = 0; c < this.level.items.length; c++) {
       for (var r = 0; r < this.level.items[c].length; r++) {
