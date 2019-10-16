@@ -1,6 +1,14 @@
-class Sprite {
-  constructor () {
-    this.groups = [];
+import {Surface, Rect, Color} from "./jsgame.js";
+
+export class Sprite {
+  constructor (x, y, width, height) {
+    this._g = [];
+    this.rect = new Rect(x, y, width, height);
+    this.color = new Color(0, 0, 0);
+  }
+
+  set_color (color) {
+    this.color = color;
   }
 
   update () {
@@ -10,7 +18,7 @@ class Sprite {
   add (group) {
     if (!group.includes(this)) {
       group.push(this);
-      this.groups.push(group);
+      this._g.push(group);
     }
   }
 
@@ -22,9 +30,9 @@ class Sprite {
         }
       }
 
-      for (var i = 0; i < this.groups.length; i++) {
-        if (this.groups[i] == group) {
-          this.groups.splice(i, 1);
+      for (var i = 0; i < this._g.length; i++) {
+        if (this._g[i] == group) {
+          this._g.splice(i, 1);
         }
       }
 
@@ -32,21 +40,21 @@ class Sprite {
   }
 
   kill () {
-    for (var i = 0; i < this.groups.length; i++) {
-      this.remove(this.groups[i]);
+    for (var i = 0; i < this._g.length; i++) {
+      this.remove(this._g[i]);
     };
   }
 
   alive () {
-    return this.groups.length > 0;
+    return this._g.length > 0;
   }
 
   groups() {
-    return this.groups;
+    return this._g;
   }
 }
 
-class Group {
+export class Group {
   constructor () {
     this.sprites = [];
   }
@@ -99,6 +107,4 @@ class Group {
       surface.draw(this.sprites[i]);
     }
   }
-
-
 }
