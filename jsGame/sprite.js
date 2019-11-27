@@ -1,6 +1,6 @@
 import {Surface, Rect, Color} from "./jsgame.js";
 
-export class Sprite {
+export default class Sprite {
   constructor (x, y, width, height) {
     this._g = [];
     this.rect = new Rect(x, y, width, height);
