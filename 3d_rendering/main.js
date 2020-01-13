@@ -10,10 +10,13 @@ main();
 
 document.addEventListener("keydown", event_keypress);
 
-var v1 = new Vertex();
-var m1 = new Matrix();
-m1.fill("random");
-console.log("m1: " + m1._m);
+var v1 = new Vector(1, 2, 3);
+var m1 = [[1, 0, 0],
+          [0, 1, 0]];
+
+logMatrix(m1);
+var result = matmul(m1, v1);
+result.log();
 
 var r = 5;
 var centerx = gameCanvas.width/2;
@@ -30,10 +33,10 @@ var points = [new Vertex(centerx-cube/2, centery-cube/2, cube/2),
               new Vertex(centerx+cube/2, centery-cube/2, -cube/2),
               new Vertex(centerx+cube/2, centery+cube/2, -cube/2)];
 
-function drawPoint(x, y) {
+function drawPoint(p) {
   ctx.beginPath();
-  ctx.fillStyle = "white";
-  ctx.arc(x, y, r, 0, 2*Math.PI);
+  ctx.fillStyle = p.color;
+  ctx.arc(p.x, p.y, r, 0, 2*Math.PI);
   ctx.fill();
   //ctx.endPath();
 }
@@ -43,7 +46,7 @@ function main() {
     clearCanvas();
 
     for (point of points) {
-      drawPoint(point.x, point.y);
+      drawPoint(point);
     }
 
     main();
