@@ -31,8 +31,8 @@ class Vector {
 }
 
 class Vertex {
-  constructor() {
-    this.vector = new Vector()
+  constructor(x, y, z=0) {
+    this.vector = new Vector(x, y, z);
   }
 
   get x() {

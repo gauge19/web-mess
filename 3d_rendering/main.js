@@ -15,13 +15,36 @@ var m1 = new Matrix();
 m1.fill("random");
 console.log("m1: " + m1._m);
 
+var r = 5;
+var centerx = gameCanvas.width/2;
+var centery = gameCanvas.height/2;
+var cube = 80;
+
+var points = [new Vertex(centerx-cube/2, centery-cube/2, cube/2),
+              new Vertex(centerx-cube/2, centery+cube/2, cube/2),
+              new Vertex(centerx+cube/2, centery-cube/2, cube/2),
+              new Vertex(centerx+cube/2, centery+cube/2, cube/2),
+
+              new Vertex(centerx-cube/2, centery-cube/2, -cube/2),
+              new Vertex(centerx-cube/2, centery+cube/2, -cube/2),
+              new Vertex(centerx+cube/2, centery-cube/2, -cube/2),
+              new Vertex(centerx+cube/2, centery+cube/2, -cube/2)];
+
+function drawPoint(x, y) {
+  ctx.beginPath();
+  ctx.fillStyle = "white";
+  ctx.arc(x, y, r, 0, 2*Math.PI);
+  ctx.fill();
+  //ctx.endPath();
+}
 
 function main() {
   setTimeout(function onTick() {
     clearCanvas();
 
-    // console.log("v1.x: " + v1.x);
-    // v1.x = v1.x+=1;
+    for (point of points) {
+      drawPoint(point.x, point.y);
+    }
 
     main();
   }, GAME_SPEED)
