@@ -7,6 +7,9 @@ function btn1_action() {
 }
 
 function btn2_action() {
-  // demo.innerHTML = input1.value;
-  window.open("kurse1.csv");
+  if ([0, 0, 0]) {
+    console.log("true");
+  } else {
+    console.log("false");
+  }
 }

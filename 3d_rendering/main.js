@@ -5,49 +5,76 @@ const CANVAS_BORDER_COLOR = "grey";
 const gameCanvas = document.getElementById("gameCanvas");
 const ctx = gameCanvas.getContext("2d");
 
+// ctx.translate(300, 200);
+
 var running = true;
 main();
 
 document.addEventListener("keydown", event_keypress);
 
-var v1 = new Vector(1, 2, 3);
-var m1 = [[1, 0, 0],
-          [0, 1, 0]];
+var r = 4; // radius of cirle used to represent points
+var cube_scale = 10; // determins scale of cube
+var translation = [gameCanvas.width/2, gameCanvas.height/2]; // used to shift items to center
 
-logMatrix(m1);
-var result = matmul(m1, v1);
-result.log();
+// points to form cube
+var points = [new Vertex(-10, -10, -10),
+              new Vertex(-10, 10, -10),
+              new Vertex(10, 10, -10),
+              new Vertex(10, -10, -10),
 
-var r = 5;
-var centerx = gameCanvas.width/2;
-var centery = gameCanvas.height/2;
-var cube = 80;
+              new Vertex(-10, -10, 10),
+              new Vertex(-10, 10, 10),
+              new Vertex(10, 10, 10),
+              new Vertex(10, -10, 10)];
 
-var points = [new Vertex(centerx-cube/2, centery-cube/2, cube/2),
-              new Vertex(centerx-cube/2, centery+cube/2, cube/2),
-              new Vertex(centerx+cube/2, centery-cube/2, cube/2),
-              new Vertex(centerx+cube/2, centery+cube/2, cube/2),
-
-              new Vertex(centerx-cube/2, centery-cube/2, -cube/2),
-              new Vertex(centerx-cube/2, centery+cube/2, -cube/2),
-              new Vertex(centerx+cube/2, centery-cube/2, -cube/2),
-              new Vertex(centerx+cube/2, centery+cube/2, -cube/2)];
-
+// draws circle at the coordinates of the Vertex p
 function drawPoint(p) {
   ctx.beginPath();
   ctx.fillStyle = p.color;
-  ctx.arc(p.x, p.y, r, 0, 2*Math.PI);
+  ctx.arc(p.x*cube_scale+translation[0], p.y*cube_scale+translation[1], r, 0, 2*Math.PI);
   ctx.fill();
   //ctx.endPath();
 }
+
+// draws a line between two points
+function drawLine(p1, p2) {
+  ctx.beginPath();
+  ctx.strokeStyle = p1.color;
+  ctx.moveTo(p1.x*cube_scale+translation[0], p1.y*cube_scale+translation[1]);
+  ctx.lineTo(p2.x*cube_scale+translation[0], p2.y*cube_scale+translation[1]);
+  ctx.stroke();
+}
+
+var ax = 0; // angle of rotation
+var ay = 0;
 
 function main() {
   setTimeout(function onTick() {
     clearCanvas();
 
+    // calculate points
+    var projected_arr = []; // all the newly calculated vertices
+    var index = 0;
     for (point of points) {
-      drawPoint(point);
+      projected_arr[index] = point.rotate(ax, "x").rotate(ax, "y").project();
+
+      index++;
     }
+
+    // draw the projected points
+    for (p of projected_arr) {
+      drawPoint(p);
+    }
+
+    // connecting points
+    for (var i = 0; i < 4; i++) {
+      drawLine(projected_arr[i], projected_arr[(i+1) % 4]);
+      drawLine(projected_arr[i+4], projected_arr[((i+1) % 4)+4]);
+      drawLine(projected_arr[i], projected_arr[i+4]);
+    }
+
+    ax += 0.03;  // increase angle every frame to make it rotate automatically
+
 
     main();
   }, GAME_SPEED)
@@ -65,34 +92,31 @@ function clearCanvas() {
 }
 
 function event_keypress(event) {
-  /*
+
   const LEFT_KEY = 37;
   const RIGHT_KEY = 39;
 
-  const A_KEY = 65;
-  const D_KEY = 68;
-  */
-
   const UP_KEY = 38;
   const DOWN_KEY = 40;
-
-  const W_KEY = 87;
-  const S_KEY = 83;
 
   const keyPressed = event.keyCode;
 
   //console.log(keyPressed);
 
   if (keyPressed === UP_KEY) {
-    pr.move(-MOVE_SPEED);
+    ax+=0.03;
+    console.log("ax: " + ax);
   }
   if (keyPressed === DOWN_KEY) {
-    pr.move(MOVE_SPEED);
+    ax-=0.03;
+    console.log("ax: " + ax);
   }
-  if (keyPressed === W_KEY) {
-    pl.move(-MOVE_SPEED);
+  if (keyPressed === LEFT_KEY) {
+    ay+=0.03;
+    console.log("ay: " + ay);
   }
-  if (keyPressed === S_KEY) {
-    pl.move(MOVE_SPEED);
+  if (keyPressed === RIGHT_KEY) {
+    ay-=0.03;
+    console.log("ay: " + ay);
   }
 }
