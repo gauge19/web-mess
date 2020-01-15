@@ -12,8 +12,16 @@ main();
 
 document.addEventListener("keydown", event_keypress);
 
+// defined in index.html to be used with sliders
+/*
 var r = 4; // radius of cirle used to represent points
 var cube_scale = 10; // determins scale of cube
+var ax = 2; // angle of rotation
+var ay = 0;
+var az = 0;
+var a_change = 0.0314;
+*/
+
 var translation = [gameCanvas.width/2, gameCanvas.height/2]; // used to shift items to center
 
 // points to form cube
@@ -45,9 +53,6 @@ function drawLine(p1, p2) {
   ctx.stroke();
 }
 
-var ax = 0; // angle of rotation
-var ay = 0;
-
 function main() {
   setTimeout(function onTick() {
     clearCanvas();
@@ -56,7 +61,7 @@ function main() {
     var projected_arr = []; // all the newly calculated vertices
     var index = 0;
     for (point of points) {
-      projected_arr[index] = point.rotate(ax, "x").rotate(ax, "y").project();
+      projected_arr[index] = point.rotate(ax, "x").rotate(ay, "y").rotate(az, "z").project();
 
       index++;
     }
@@ -73,8 +78,10 @@ function main() {
       drawLine(projected_arr[i], projected_arr[i+4]);
     }
 
-    ax += 0.03;  // increase angle every frame to make it rotate automatically
-
+    // increase angle every frame to make it rotate automatically, handled by sliders
+    ax += a_update;
+    ay += a_update;
+    az += a_update;
 
     main();
   }, GAME_SPEED)
@@ -118,5 +125,8 @@ function event_keypress(event) {
   if (keyPressed === RIGHT_KEY) {
     ay-=0.03;
     console.log("ay: " + ay);
+  }
+  else {
+    console.log("Key pressed: " + keyPressed);
   }
 }
