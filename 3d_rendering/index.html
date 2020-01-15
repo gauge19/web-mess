@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title></title>
     <script type="text/javascript">
-      // initialize variables for use with slider
+      // initialize variables for use with sliders
 
       var r = 4; // radius of cirle used to represent points
       var cube_scale = 10; // determins scale of cube
@@ -69,13 +69,13 @@
 
       <div id="autoRotation">
         <label for="rotationSpeed">
-          <input class="sliders" id="rotationSpeed" type="range" value="0" min="0" max="0.07" step="0.005" oninput="slider_rotation(this.value)">
+          <input class="sliders" id="rotationSpeed" type="range" value="0" min="0" max="0.07" step="0.005" oninput="slider_rotationSpeed(this.value)">
           Automatic rotation speed
         </label>
         <br>
         <label for="">
           <input type="checkbox" name="auto_rotate" onclick="checkbox_autoRotate(this)">
-          Automatic rotation
+          Automatic rotation around all axes
         </label>
       </div>
 

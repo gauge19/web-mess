@@ -15,7 +15,8 @@ function slider_rotation(axis, value) {
 }
 
 function slider_rotationSpeed(value) {
-  a_change = value;
+  console.log("a_update: " + a_update);
+  a_update = value;
 }
 
 function checkbox_autoRotate(checkbox) {
