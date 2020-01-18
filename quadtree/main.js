@@ -15,15 +15,15 @@ function randint(min, max) {
 }
 
 var rect = new Rectangle(gameCanvas.width/2, gameCanvas.height/2, gameCanvas.width/2-50, gameCanvas.height/2-50);
-// var circ = new Circle(100, 100, 100);
+var test1 = new Rectangle(gameCanvas.width/2, gameCanvas.height/2, 100, 100);
+var test2 = new Circle(gameCanvas.width/2, gameCanvas.height/2, 100);
+var p1 = new Point(gameCanvas.width/2-10, gameCanvas.height/2-10);
 
 var qtree = new Quadtree(rect, 4);
-for (var i = 0; i < 100; i++) {
-  //console.log(i);
-  if (qtree.insert(new Point(randint(rect.left, rect.right), randint(rect.top, rect.bottom)))) {
-      //console.log("error");
-  }
+for (var i = 0; i < 30; i++) {
+  qtree.insert(new Point(randint(rect.left, rect.right), randint(rect.top, rect.bottom)))
 }
+qtree.insert(p1);
 qtree.drawPoints();
 
 document.addEventListener("keydown", event_keypress);
@@ -36,7 +36,17 @@ function main() {
 
     // rect.draw(ctx);
     qtree.draw(ctx);
-    qtree.drawPoints();
+    test2.draw(ctx, "green");
+    let pts = qtree.query(test2);
+    for (point of pts) {
+      drawPoint(point.x, point.y, 4, "green");
+    }
+    drawPoint(p1.x, p1.y, 5, "blue");
+
+    let lmao = qtree.closest(p1, 4);
+    for (point of lmao) {
+      drawPoint(point.x, point.y, 4, "purple");
+    }
 
     main();
   }, GAME_SPEED)
@@ -66,11 +76,10 @@ function event_keypress(event) {
   //console.log(keyPressed);
 
   if (keyPressed === UP_KEY) {
-    console.log(qtree.query(new Rect(gameCanvas.width/2, gameCanvas.height/2, 100, 100)));
+    console.log(qtree.query(test2).length);
   }
   else if (keyPressed === DOWN_KEY) {
-    ax-=0.03;
-    console.log("ax: " + ax);
+
   }
   else if (keyPressed === LEFT_KEY) {
     ay+=0.03;
@@ -89,6 +98,9 @@ function event_mousemove(event) {
   const r = gameCanvas.getBoundingClientRect();
   const x = event.clientX - r.left;
   const y = event.clientY - r.top;
+
+  test2.x = x;
+  test2.y = y;
 
   document.getElementById("demo").innerHTML = "x: " + x + " y: " + y;
   //console.log("x: " + x + " y: " + y);

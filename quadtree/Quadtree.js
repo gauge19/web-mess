@@ -101,6 +101,13 @@ class Point {
     this.y = y;
     this.userData = data;
   }
+
+  // returns eukledian distance SQUARED between other point and this
+  dist2(other) {
+    let distX = Math.abs(other.x - this.x);
+    let distY = Math.abs(other.y - this.y);
+    return Math.pow(distX, 2) + Math.pow(distY, 2);
+  }
 }
 
 class Quadtree {
@@ -124,6 +131,17 @@ class Quadtree {
     this.points = [];
     this.divided = false;
     this.children = [];
+  }
+
+  // length of this node and all of its children combined
+  get length() {
+    let count = this.points.length;
+    if (this.divided) {
+      for (var child of this.children) {
+        count += child.length;
+      }
+    }
+    return count;
   }
 
   // insert a point into the quadtree
@@ -167,15 +185,15 @@ class Quadtree {
     this.divided = true;
   }
 
-  query(rect) {
+  query(range) {
     let results = [];
 
-    if (!this.boundary.intersects(rect)) {
+    if (!range.intersects(this.boundary)) {
       return results;
     }
 
     for (var point of this.points) {
-      if (rect.contains(point)) {
+      if (range.contains(point)) {
         results.push(point);
       }
     }
@@ -184,7 +202,7 @@ class Quadtree {
       return results;
     } else {
       for (var child of this.children) {
-        results.push(...child.query(rect));
+        results.push(...child.query(range));
       }
     }
 
@@ -212,14 +230,54 @@ class Quadtree {
         child.draw(context);
       }
     }
+    this.drawPoints();
+  }
+
+  find_closest(point, count) {
+    console.log(point instanceof Point);
+    // if quad has been divided before, check its children
+    if (this.divided) {
+      for (var child of this.children) {
+        // if child contains point in its borders
+        if (child.boundary.contains(point)) {
+          // if child has more than 'count' items within its boundary
+          if (child.length > count) {
+            // continue searching children
+            return (child.find_closest(point, count));
+          } else {
+            // return all points within this quad and its children which in total is less than 'count'
+            return this.query(this.boundary); // return all points within this quadrant
+          }
+        }
+      }
+    } else {
+      return this.points;
+    }
+  }
+
+  closest(point, count=1) {
+    let closest = this.find_closest(point, count);
+    closest.sort(function(a, b) {
+      let k1 = a.dist2(point);
+      let k2 = b.dist2(point);
+      if (k1> k2) {
+        return 1;
+      } else if (k2 > k1) {
+        return -1;
+      } else {
+        return 0;
+      }
+    })
+    console.log(closest);
+    return closest;
   }
 
 }
 
 // draws circle at the coordinates of x and y
-function drawPoint(x, y) {
+function drawPoint(x, y, r=3, color="red") {
   ctx.beginPath();
-  ctx.fillStyle = "red";
-  ctx.arc(x, y, 5, 0, 2*Math.PI);
+  ctx.fillStyle = color;
+  ctx.arc(x, y, r, 0, 2*Math.PI);
   ctx.fill();
 }
