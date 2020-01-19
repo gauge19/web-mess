@@ -126,14 +126,14 @@ class Quadtree {
       throw RangeError('capacity must be greater than 0');
     }
 
-    this.boundary = boundary;
-    this.capacity = capacity;
-    this.points = [];
-    this.divided = false;
-    this.children = [];
+    this.boundary = boundary; // Rectangle object with boundary of this quad
+    this.capacity = capacity; // maximum amount of points this quad can store befor subdividing
+    this.points = []; // array containing all the points in this quad object
+    this.divided = false; // true if it has children
+    this.children = []; // array containing children quad objects/nodes
   }
 
-  // length of this node and all of its children combined
+  // number of points in this node and all of its children combined
   get length() {
     let count = this.points.length;
     if (this.divided) {
@@ -185,6 +185,10 @@ class Quadtree {
     this.divided = true;
   }
 
+  /**
+   * Returns array of Point objects which are within the boundary of the range object
+   * @param {Object} range - Rectangle or Circle object
+   */
   query(range) {
     let results = [];
 
@@ -269,7 +273,7 @@ class Quadtree {
       }
     })
     console.log(closest);
-    return closest;
+    return closest.slice(1, 2);
   }
 
 }
