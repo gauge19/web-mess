@@ -1,31 +1,9 @@
 const GAME_SPEED = 30;
-const CANVAS_BACKGROUND_COLOR = "black";
-const CANVAS_BORDER_COLOR = "grey";
 
-const gameCanvas = document.getElementById("gameCanvas");
-gameCanvas.width = window.innerWidth-100;
-gameCanvas.height = window.innerHeight-100;
-const ctx = gameCanvas.getContext("2d");
+var canvas = new Canvas("gameCanvas", window.innerWidth-100, window.innerHeight-100);
 
 var running = true;
 main();
-
-function randint(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max-min+1)) + min;;
-}
-
-function clearCanvas() {
-  //  Select the colour to fill the drawing
-  ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
-  //  Select the colour for the border of the canvas
-  ctx.strokestyle = CANVAS_BORDER_COLOR;
-  // Draw a "filled" rectangle to cover the entire canvas
-  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-  // Draw a "border" around the entire canvas
-  ctx.strokeRect(0, 0, gameCanvas.width, gameCanvas.height);
-}
 
 function event_keypress(event) {
 
@@ -81,8 +59,8 @@ document.addEventListener("keydown", event_keypress);
 document.addEventListener("mousemove", event_mousemove);
 document.addEventListener("mousedown", event_mousedown);
 
-var map = new Map(1000, gameCanvas.height*2);
-var camera = new Camera(ctx, map, 0, 0, gameCanvas.width, gameCanvas.height);
+var map = new Map(1000, canvas.height*2);
+var camera = new Camera(canvas, map, 0, 0, canvas.width, canvas.height);
 
 // initialising variables
 var player = new Blob(map.w/2, map.w/2);
@@ -90,13 +68,14 @@ var population = new Population(map, 100);
 
 function main() {
   setTimeout(function onTick() {
-    clearCanvas();
+    canvas.clear();
 
     population.update();
     population.draw(camera);
 
     player.update();
     player.draw(camera);
+    Math.max
 
     main();
   }, GAME_SPEED)

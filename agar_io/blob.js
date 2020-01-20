@@ -125,11 +125,11 @@ class Blob {
    * Renders Blob object onto the canvas. Should be called once per frame.
    */
   draw(camera, color="white") {
-    camera.context.beginPath();
+    camera.canvas.context.beginPath();
     let pos = camera.get_pos(this);
-    camera.context.arc(pos.x, pos.y, this.r, 0, 2*Math.PI);
-    camera.context.fillStyle = color;
-    camera.context.fill();
+    camera.canvas.context.arc(pos.x, pos.y, this.r, 0, 2*Math.PI);
+    camera.canvas.context.fillStyle = color;
+    camera.canvas.context.fill();
   }
 }
 
@@ -137,7 +137,7 @@ class Population {
   constructor(map, size=10) {
     this.population = [];
     for (var i = 0; i < size; i++) {
-      this.population.push(new Blob(Math.random()*map.w, Math.random()*map.h, randint(10, 50)));
+      this.population.push(new Blob(Math.random()*map.w, Math.random()*map.h, random.randint(10, 50)));
     }
   }
 
@@ -169,8 +169,8 @@ class Map {
 }
 
 class Camera {
-  constructor(context, map, x, y, w, h) {
-    this.context = context;
+  constructor(canvas, map, x, y, w, h) {
+    this.canvas = canvas;
     this.map = map;
     this.x = x;
     this.y = y;
@@ -178,6 +178,32 @@ class Camera {
     this.h = h;
 
     this.movement_speed = 50;
+  }
+
+  get_pos(obj) {
+    return {x: obj.x-this.x, y: obj.y-this.y};
+  }
+
+  move(dx, dy) {
+    if (dx < -1 || dx > 1 || dy < -1 || dy > 1) {
+      console.log("dx and dy have to be -1, 0 or 1");
+      return;
+    }
+    this.x += dx*this.movement_speed;
+    this.y += dy*this.movement_speed;
+
+    if (this.right > this.map.w) {
+      this.right = this.map.w;
+    }
+    else if (this.left < 0) {
+      this.left = 0;
+    }
+    else if (this.bottom > this.map.h) {
+      this.bottom = this.map.h;
+    }
+    else if (this.top < 0) {
+      this.top = 0;
+    }
   }
 
   get left() {
@@ -207,31 +233,5 @@ class Camera {
 
   get topleft() {
     return this.top, this.left;
-  }
-
-  get_pos(obj) {
-    return {x: obj.x-this.x, y: obj.y-this.y};
-  }
-
-  move(dx, dy) {
-    if (dx < -1 || dx > 1 || dy < -1 || dy > 1) {
-      console.log("dx and dy have to be -1, 0 or 1");
-      return;
-    }
-    this.x += dx*this.movement_speed;
-    this.y += dy*this.movement_speed;
-
-    if (this.right > this.map.w) {
-      this.right = this.map.w;
-    }
-    else if (this.left < 0) {
-      this.left = 0;
-    }
-    else if (this.bottom > this.map.h) {
-      this.bottom = this.map.h;
-    }
-    else if (this.top < 0) {
-      this.top = 0;
-    }
   }
 }
