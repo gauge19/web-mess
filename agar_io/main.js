@@ -40,18 +40,16 @@ function event_keypress(event) {
   //console.log(keyPressed);
 
   if (keyPressed === UP_KEY) {
-    console.log(qtree.query(test2).length);
+    camera.move(0, -1);
   }
   else if (keyPressed === DOWN_KEY) {
-
+    camera.move(0, 1);
   }
   else if (keyPressed === LEFT_KEY) {
-    ay+=0.03;
-    console.log("ay: " + ay);
+    camera.move(-1, 0);
   }
   else if (keyPressed === RIGHT_KEY) {
-    ay-=0.03;
-    console.log("ay: " + ay);
+    camera.move(1, 0);
   }
   else {
     console.log("Key pressed: " + keyPressed);
@@ -83,19 +81,22 @@ document.addEventListener("keydown", event_keypress);
 document.addEventListener("mousemove", event_mousemove);
 document.addEventListener("mousedown", event_mousedown);
 
+var map = new Map(1000, gameCanvas.height*2);
+var camera = new Camera(ctx, map, 0, 0, gameCanvas.width, gameCanvas.height);
+
 // initialising variables
-var player = new Blob(gameCanvas.width/2, gameCanvas.height/2);
-var population = new Population();
+var player = new Blob(map.w/2, map.w/2);
+var population = new Population(map, 100);
 
 function main() {
   setTimeout(function onTick() {
     clearCanvas();
 
     population.update();
-    population.draw(ctx);
+    population.draw(camera);
 
     player.update();
-    player.draw(ctx);
+    player.draw(camera);
 
     main();
   }, GAME_SPEED)

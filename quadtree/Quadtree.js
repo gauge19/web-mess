@@ -150,6 +150,10 @@ class Quadtree {
       return false;
     }
     if (this.points.length < this.capacity && !this.divided) {
+      // for (var p of this.points) {
+      //   dist_point = Math.pow(point.x-this.boundary.left, 2) + Math.pow(point.y-this.boundary.top, 2);
+      //   dist_p = Math.pow(p.x-this.boundary.left, 2) + Math.pow(p.y-this.boundary.top, 2);
+      // }
       this.points.push(point);
       return true;
     }

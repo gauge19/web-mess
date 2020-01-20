@@ -68,7 +68,7 @@ class Vector2 {
 
 class Blob {
   constructor(x, y, diameter=20) {
-    this.pos = new Vector2(x, y);
+    this.pos = new Vector2(x, y); // position in the map
     this.r = diameter/2;
 
     this.direction = new Vector2(0, 0);
@@ -124,19 +124,20 @@ class Blob {
   /**
    * Renders Blob object onto the canvas. Should be called once per frame.
    */
-  draw(context, color="white") {
-    context.beginPath();
-    context.arc(this.x, this.y, this.r, 0, 2*Math.PI);
-    context.fillStyle = color;
-    context.fill();
+  draw(camera, color="white") {
+    camera.context.beginPath();
+    let pos = camera.get_pos(this);
+    camera.context.arc(pos.x, pos.y, this.r, 0, 2*Math.PI);
+    camera.context.fillStyle = color;
+    camera.context.fill();
   }
 }
 
 class Population {
-  constructor(size=10) {
+  constructor(map, size=10) {
     this.population = [];
     for (var i = 0; i < size; i++) {
-      this.population.push(new Blob(Math.random()*gameCanvas.width, Math.random()*gameCanvas.height, randint(10, 50)));
+      this.population.push(new Blob(Math.random()*map.w, Math.random()*map.h, randint(10, 50)));
     }
   }
 
@@ -146,9 +147,91 @@ class Population {
     }
   }
 
-  draw(context, color="blue") {
+  draw(camera, color="blue") {
     for (var blob of this.population) {
-      blob.draw(context, color);
+      blob.draw(camera, color);
+    }
+  }
+}
+
+class Map {
+  constructor(w, h) {
+    this.w = w;
+    this.h = h;
+  }
+
+  get width() {
+    return this.w;
+  }
+  get height() {
+    return this.h;
+  }
+}
+
+class Camera {
+  constructor(context, map, x, y, w, h) {
+    this.context = context;
+    this.map = map;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+
+    this.movement_speed = 50;
+  }
+
+  get left() {
+    return this.x;
+  }
+  set left(v) {
+    this.x = v;
+  }
+  get right() {
+    return this.x+this.w;
+  }
+  set right(v) {
+    this.x = v-this.w;
+  }
+  get top() {
+    return this.y;
+  }
+  set top(v) {
+    this.y = v;
+  }
+  get bottom() {
+    return this.y+this.h;
+  }
+  set bottom(v) {
+    this.y = v-this.h;
+  }
+
+  get topleft() {
+    return this.top, this.left;
+  }
+
+  get_pos(obj) {
+    return {x: obj.x-this.x, y: obj.y-this.y};
+  }
+
+  move(dx, dy) {
+    if (dx < -1 || dx > 1 || dy < -1 || dy > 1) {
+      console.log("dx and dy have to be -1, 0 or 1");
+      return;
+    }
+    this.x += dx*this.movement_speed;
+    this.y += dy*this.movement_speed;
+
+    if (this.right > this.map.w) {
+      this.right = this.map.w;
+    }
+    else if (this.left < 0) {
+      this.left = 0;
+    }
+    else if (this.bottom > this.map.h) {
+      this.bottom = this.map.h;
+    }
+    else if (this.top < 0) {
+      this.top = 0;
     }
   }
 }
