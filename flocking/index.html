@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../utilities.js" charset="utf-8"></script>
+    <script src="../quadtree/Quadtree.js" charset="utf-8"></script>
+    <script src="boid.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+
+    <style>
+
+      /* place the canvas exactly in the center of the page */
+      #gameCanvas {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translate(-50%, 0%);
+      }
+
+      label {
+        font: 1rem 'Fira Sans', sans-serif;
+      }
+      input {
+        margin: .4rem;
+      }
+    </style>
+
+    <script src="main.js" charset="utf-8"></script>
+
+    <p id="demo"></p>
+
+  </body>
+</html>

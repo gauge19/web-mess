@@ -75,7 +75,6 @@ function main() {
 
     player.update();
     player.draw(camera);
-    Math.max
 
     main();
   }, GAME_SPEED)

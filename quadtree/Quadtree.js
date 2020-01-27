@@ -23,7 +23,7 @@ class Rectangle {
     return this.top, this.left;
   }
 
-  draw(context, color="white", weight="2") {
+  draw(context, color="green", weight="2") {
     context.beginPath();
     context.lineWidth = weight;
     context.strokeStyle = color;
@@ -238,7 +238,23 @@ class Quadtree {
         child.draw(context);
       }
     }
-    this.drawPoints();
+    // this.drawPoints();
+  }
+
+  /**
+   * Executes a callback function for every points' userData
+   * @param {function} cb callback function to be executed
+   */
+  forEach(cb) {
+    for (var point of this.points) {
+      //drawPoint(point.x, point.y,5);
+      cb(point.userData);
+    }
+    if (this.divided) {
+      for (var child of this.children) {
+        child.forEach(cb);
+      }
+    }
   }
 
   find_closest(point, count) {
@@ -284,6 +300,7 @@ class Quadtree {
 
 // draws circle at the coordinates of x and y
 function drawPoint(x, y, r=3, color="red") {
+  let ctx = canvas.context;
   ctx.beginPath();
   ctx.fillStyle = color;
   ctx.arc(x, y, r, 0, 2*Math.PI);
