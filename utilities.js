@@ -250,7 +250,7 @@ class Vector2 {
 
   /**
    * Returns new vector which is this vector, rotated counter-clockwise by a given angle theta.
-   0° is to the right of the Vector.
+   0° is to the right of the Vector head.
    Heading angle (this.heading_deg()) should be considered for rotation.
    Add this.heading_deg() to theta to get rotation without angle of direction. Only works if x and y are greater than 0 though.
    * @param {number} theta Angle to be rotated in degrees

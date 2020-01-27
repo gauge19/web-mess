@@ -83,7 +83,7 @@ function main() {
 
       // boundary to chech for surrounding boids
       let viewfield = new Circle(boid.position.x, boid.position.y, viewing_radius);
-      viewfield.draw(canvas.context);
+      //viewfield.draw(canvas.context);
       let surrounding = qtree.query(viewfield); // array containing all boids within viewfield (including itself)
       //console.log(surrounding);
 
