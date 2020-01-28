@@ -1,9 +1,15 @@
 class Boid {
   constructor() {
     this.position = new Vector2(random.random(canvas.width), random.random(canvas.height));
-    this.velocity = new Vector2(random.random(-1, 1), random.random(-1, 1));
+    // this.velocity = new Vector2(random.random(-10, 10), random.random(-10, 10));
+    this.velocity = Vector2.random(-10, 0);
     this.accelaration = new Vector2();
-    this.maxSpeed = 1;
+
+    this.maxSpeed = 5;
+
+    this.min_distance = 100;
+    this.alignment_factor = 8;
+    this.cohesion_factor = 100;
   }
 
   /**
@@ -26,43 +32,73 @@ class Boid {
   }
 
   separation(boids) {
+    var c = new Vector2(); //
 
+    for (var boid of boids) {
+      boid = boid.userData; // access the Boid object rather than the Point object
+      if (boid != this) {
+        c = Vector2.sub(c, (Vector2.sub(boid.position, this.position)));
+      }
+    }
+
+    return c;
   }
 
   alignment(boids) {
-    var avg = new Vector2();
-    let count = 0;
+    var pv = new Vector2(); // perceived velocity (velocity of all boids exluding this boid)
+    let count = 0; // number of boids this boids is adjusting its position to
+
     for (var boid of boids) {
-      boid = boid.userData;
+      boid = boid.userData; // access the Boid object rather than the Point object
       if (boid != this) {
-        avg.add_vector_ip(boid.velocity);
+        pv = Vector2.add(pv, boid.velocity); // add all positions
         count++;
       }
     }
     if (count > 0) {
-      avg.div_ip(count);
+      pv.div_ip(count); // average the velocity of all other boids => pv / n-1
 
       // Implement Reynolds: Steering = Desired - Velocity
-      avg = avg.normalize();
-      avg.mult_ip(this.maxSpeed);
-      avg.log()
-      let steer = Vector2.sub(avg, this.velocity).normalize();
-      this.accelaration.add_vector_ip(steer);
+      let steer = Vector2.sub(pv, this.velocity);
+      return Vector2.div(steer, this.alignment_factor);
+    } else {
+      return new Vector2();
     }
   }
 
   cohesion(boids) {
+    var pc = new Vector2(); // perceived center of mass (center of all boids exluding this boid)
+    let count = 0; // number of boids this boids is adjusting its position to
 
+    for (var boid of boids) {
+      boid = boid.userData; // access the Boid object rather than the Point object
+      if (boid != this) {
+        pc = Vector2.add(pc, boid.position); // add all positions
+        count++;
+      }
+    }
+    if (count > 0) {
+      pc.div_ip(count); // average the position of all other boids => pc / n-1
+
+      // Implement Reynolds: Steering = Desired - Velocity
+      let steer = Vector2.sub(pc, this.position);
+      return Vector2.div(steer, this.cohesion_factor);
+    } else {
+      return new Vector2();
+    }
   }
 
-  update(boids) {
+  update(allBoids, closeBoids) {
 
-    // this.separation(boids);
-    // this.alignment(boids);
-    // this.cohesion(boids);
+    var sep = this.separation(closeBoids);
+    var align = this.alignment(allBoids);
+    var coh = this.cohesion(allBoids);
 
-    this.velocity = Vector2.add(this.velocity, this.accelaration);
-    this.velocity.limit(this.maxSpeed);
+    this.velocity = Vector2.add(this.velocity, sep);
+    this.velocity = Vector2.add(this.velocity, align);
+    this.velocity = Vector2.add(this.velocity, coh);
+    //this.velocity.limit2(this.maxSpeed);
+    this.velocity.mag = this.maxSpeed;
     this.position = Vector2.add(this.position, this.velocity);
     this.accelaration.mult_ip(0);
     this.wrap(canvas);
@@ -70,10 +106,12 @@ class Boid {
 
   draw(canvas) {
     let r = 2;
-    let lineLength = 10;
+    let lineLength = 5;
 
     // draw center of boid
     drawPoint(this.position.x, this.position.y, r, "white");
+
+    // rotation test
 
     // draw triangle rotated in moving direction
     canvas.context.beginPath();

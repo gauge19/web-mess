@@ -124,22 +124,25 @@ class Canvas {
 
 class Vector2 {
   constructor(x=0, y=0) {
-    this._x = x;
-    this._y = y;
+    this.x = x;
+    this.y = y;
   }
 
-  get x() {
-    return this._x;
+  /**
+  * Get magnitude of this vector.
+  * @returns {number} magnitude
+  */
+  get mag() {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
   }
-  get y() {
-    return this._y;
-  }
-
-  set x(value) {
-    this._x = value;
-  }
-  set y(value) {
-    this._y = value;
+  /**
+  * Set magnitude of this vector.
+  * @param {number} magnitude New magnitude
+  */
+  set mag(len) {
+    let h = this.heading(); // angle of direction
+    this.x = len*Math.cos(h);
+    this.y = len*Math.sin(h);
   }
 
   log() {
@@ -193,21 +196,13 @@ class Vector2 {
   }
 
   /**
-   * Limits x and y value to v.
+   * Limits x and y value to v. Possibly doesn't work.
    * @param {number} v Maximum (and negative minimum) value
    */
   limit(v) {
-    if (this.x > v) {
-      this.x = v;
-    }
-    if (this.y > v) {
-      this.y = v;
-    }
-    if (this.x < -v) {
-      this.x = -v;
-    }
-    if (this.y < -v) {
-      this.y = -v;
+    if (this.mag > v) {
+      this.div_ip(this.mag)
+      this.mult_ip(v);
     }
   }
 
@@ -216,11 +211,11 @@ class Vector2 {
    * @returns {Object} normalized Vector2 object
    */
   normalize() {
-    let mag = this.mag();
+    let mag = this.mag;
     if (mag != 0) {
-      return this.mult((1/this.mag()));
+      return this.mult((1/mag));
     } else {
-      return this.mult(1);
+      return this.mult(1); // copy of this
     }
   }
 
@@ -238,14 +233,6 @@ class Vector2 {
    */
   heading_deg() {
     return this.heading()*(180/Math.PI);
-  }
-
-  /**
-   * Returns magnitude of this vector.
-   * @returns {number} magnitude
-   */
-  mag() {
-    return Math.hypot(this.x, this.y);
   }
 
   /**
@@ -280,16 +267,7 @@ class Vector2 {
      return new Vector2(v1.x+v2.x, v1.y+v2.y);
    }
 
-  /**
-   * Adds a scalar to this vector (in place)
-   * @param {Object} scalar Vector to be added
-   */
-  add_ip(scalar) {
-    this.x += scalar;
-    this.y += scalar;
-  }
-
-  /**
+   /**
    * Subtracts two vectors from each other and returns new Vector2 object
    * @param {Object} v1 Vector2 object
    * @param {Object} v2 Vector2 object
@@ -300,6 +278,15 @@ class Vector2 {
    }
 
   /**
+   * Adds a scalar to this vector (in place)
+   * @param {Object} scalar Vector to be added
+   */
+  add_ip(scalar) {
+    this.x += scalar;
+    this.y += scalar;
+  }
+
+  /**
    * Subs a scalar from this vector (in place)
    * @param {Object} scalar Scalar to be subbed
    */
@@ -307,7 +294,6 @@ class Vector2 {
     this.x -= scalar;
     this.y -= scalar;
   }
-
 
   /**
    * Returns new vector with a sclar multiplied to this vector
@@ -332,8 +318,8 @@ class Vector2 {
    * @param {number} scalar to be divided by
    * @returns {Object} Vector2 object
    */
-  div(scalar) {
-    return new Vector2(this.x/scalar, this.y/scalar);
+  static div(v1, scalar) {
+    return new Vector2(v1.x/scalar, v1.y/scalar);
   }
 
   /**
@@ -354,6 +340,140 @@ class Vector2 {
   static cross(v1, v2) {
     return v1.x*v2.y-v1.y*v2.x;
   }
+}
+
+class Vector3 {
+  constructor(x=0, y=0, z=0) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  /**
+  * Get magnitude of this vector.
+  * @returns {number} magnitude
+  */
+  get mag() {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+  }
+
+  /**
+  * Set magnitude of this vector.
+  * @param {number} magnitude New magnitude
+  */
+  set mag(len) {
+    throw TypeError("Not yet supported");
+    let h = this.heading(); // angle of direction
+    this.x = len*Math.cos(h);
+    this.y = len*Math.sin(h);
+  }
+
+  log() {
+    console.log("Vector3 x: " + this.x + ", y: " + this.y + ", z: " + this.z);
+  }
+  toString() {
+    return "x: " + this.x + ", y: " + this.y + ", z: " + this.z;
+  }
+
+  /**
+  * Returns a new Vector2 object with random coordinates within the given width and height range.
+   * @param {number} width Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} height Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @returns {Object}
+
+   Vector2 object
+   */
+  static random(width, height, depth) {
+    if (!width) {
+      width = gameCanvas.width;
+    }
+    if (!height) {
+      height = gameCanvas.height;
+    }
+    if (!depth) {
+      depth = gameCanvas.depth;
+    }
+    return new Vector3(random.random(width), random.random(height), random.random(depth));
+  }
+
+  /**
+   * Adds two vectors to each other and returns new Vector3 object
+   * @param {Object} v1 Vector3 object
+   * @param {Object} v2 Vector3 object
+   * @returns {Object} Vector3 object
+   */
+  static add(v1, v2) {
+     return new Vector3(v1.x+v2.x, v1.y+v2.y, v1.z+v1.z);
+  }
+
+  /**
+  * Subtracts two vectors from each other and returns new Vector3 object
+  * @param {Object} v1 Vector3 object
+  * @param {Object} v2 Vector3 object
+  * @returns {Object} Vector3 object
+  */
+  static sub(v1, v2) {
+    return new Vector3(v1.x-v2.x, v1.y-v2.y, v1.z-v1.z);
+  }
+
+  /**
+  * Returns new vector with a sclar multiplied to this vector
+  * @param {number} scalar to be divided by
+  * @returns {Object} Vector3 object
+  */
+  static mult(v1, scalar) {
+    return new Vector3(v1.x*scalar, v1.y*scalar, v1.z*scalar);
+  }
+
+  /**
+   * Returns new vector with a sclar divided from this vector
+   * @param {number} scalar to be divided by
+   * @returns {Object} Vector3 object
+   */
+  static div(v1, scalar) {
+    return new Vector3(v1.x/scalar, v1.y/scalar, v1.z/scalar);
+  }
+
+  /**
+   * Adds a scalar to this vector (in place)
+   * @param {Object} scalar to be added
+   */
+  add_ip(scalar) {
+    this.x += scalar;
+    this.y += scalar;
+    this.z += scalar;
+  }
+
+  /**
+   * Subtracts a scalar from this vector (in place)
+   * @param {Object} scalar to be subtracted
+   */
+  sub_ip(scalar) {
+    this.x += scalar;
+    this.y += scalar;
+    this.z += scalar;
+  }
+
+  /**
+   * Multiplies a scalar to this vector (in place)
+   * @param {Object} scalar to be multiplied
+   */
+  mult_ip(scalar) {
+    this.x *= scalar;
+    this.y *= scalar;
+    this.z *= scalar;
+  }
+
+  /**
+   * Divides a scalar from this vector (in place)
+   * @param {Object} scalar to be divided
+   */
+  div_ip(scalar) {
+    this.x /= scalar;
+    this.y /= scalar;
+    this.z /= scalar;
+  }
+
 }
 
 function rad_to_deg(rad) {

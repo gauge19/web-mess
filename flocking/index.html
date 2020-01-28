@@ -6,19 +6,20 @@
     <script src="../utilities.js" charset="utf-8"></script>
     <script src="../quadtree/Quadtree.js" charset="utf-8"></script>
     <script src="boid.js" charset="utf-8"></script>
+    <script src="functions.js" charset="utf-8"></script>
   </head>
   <body>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
 
     <style>
 
-      /* place the canvas exactly in the center of the page */
+      /* place the canvas exactly in the center of the page
       #gameCanvas {
         position: absolute;
         top: 5%;
         left: 50%;
         transform: translate(-50%, 0%);
-      }
+      }*/
 
       label {
         font: 1rem 'Fira Sans', sans-serif;
@@ -31,6 +32,29 @@
     <script src="main.js" charset="utf-8"></script>
 
     <p id="demo"></p>
+
+    <div>
+      <label for="cohesion">
+        <input class="sliders" id="cohesion" type="range" value="100" min="1" max="100" step="1" oninput="Slider.cohesion(this.value)" onmouseover="console.log(this.value)">
+        Change cohesion factor
+      </label>
+      <br>
+      <label for="alignment">
+        <input class="sliders" id="alignment" type="range" value="8" min="1" max="20" step="1" oninput="Slider.alignment(this.value)" onmouseover="console.log(this.value)">
+        Change alignment factor
+      </label>
+      <br>
+      <label for="distance">
+        <input class="sliders" id="distance" type="range" value="100" min="10" max="200" step="10" oninput="Slider.distance(this.value)" onmouseover="console.log(this.value)">
+        Change min distance
+      </label>
+      <br>
+      <label for="speed">
+        <input class="sliders" id="speed" type="range" value="5" min="1" max="20" step="1" oninput="Slider.speed(this.value)" onmouseover="console.log(this.value)">
+        Change max speed
+      </label>
+      <br>
+    </div>
 
   </body>
 </html>

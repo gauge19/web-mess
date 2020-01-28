@@ -54,11 +54,10 @@ document.addEventListener("mousedown", event_mousedown);
 
 // variables
 const canvas_boundary = new Rectangle(canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2);
-const viewing_radius = 30;
-var v1 = new Vector2(100, 100);
+// var v1 = new Vector2(3, 4);
 
 // create boids
-const boidCount = 10;
+const boidCount = 70;
 var boids = [];
 for (var i = 0; i < boidCount; i++) {
   boids.push(new Boid());
@@ -82,37 +81,14 @@ function main() {
     qtree.forEach(function (boid) {
 
       // boundary to chech for surrounding boids
-      let viewfield = new Circle(boid.position.x, boid.position.y, viewing_radius);
+      let viewfield = new Circle(boid.position.x, boid.position.y, boid.min_distance);
       //viewfield.draw(canvas.context);
-      let surrounding = qtree.query(viewfield); // array containing all boids within viewfield (including itself)
-      //console.log(surrounding);
+      let allBoids = qtree.query(canvas_boundary); // array containing all boids (including itself)
+      let closeBoids = qtree.query(viewfield); // array containing all boids within viewfield (including itself)
 
-      boid.update(surrounding);
+      boid.update(allBoids, closeBoids);
       boid.draw(canvas);
     });
-
-    // draw circle around vector by using its rotated points
-    let x = canvas.width/2 + v1.x;
-    let y = canvas.height/2 + v1.y;
-    drawPoint(x, y, 5, "red");
-
-    const heading = v1.heading_deg();
-    var a = 0;
-    while (a<360) {
-      let v2 = Vector2.add(v1, v1.rotate(a+heading));
-
-      let x2 = canvas.width/2 + v2.x;
-      let y2 = canvas.height/2 + v2.y;
-
-      // highlight a degrees in blue, rest is yellow
-      if(a == 180) {
-        drawPoint(x2, y2, 4, "blue");
-      } else {
-        drawPoint(x2, y2, 1, "yellow");
-      }
-      a++;
-    }
-
 
     main();
   }, GAME_SPEED)
