@@ -1,11 +1,12 @@
 class Boid {
   constructor() {
     this.position = new Vector2(random.random(canvas.width), random.random(canvas.height));
-    // this.velocity = new Vector2(random.random(-10, 10), random.random(-10, 10));
-    this.velocity = Vector2.random(-10, 0);
+    this.velocity = new Vector2(random.random(-10, 10), random.random(-10, 10));
+    // this.velocity = Vector2.random(10, 0);
     this.accelaration = new Vector2();
 
     this.maxSpeed = 5;
+    this.maxForce = .05;
 
     this.min_distance = 100;
     this.alignment_factor = 8;
@@ -31,14 +32,46 @@ class Boid {
     }
   }
 
-  separation(boids) {
+  separation2(boids) {
     var c = new Vector2(); //
 
     for (var boid of boids) {
       boid = boid.userData; // access the Boid object rather than the Point object
-      if (boid != this) {
+      let d = Vector2.dist(boid.position, this.position);
+      if (boid != this && d < this.min_distance) {
         c = Vector2.sub(c, (Vector2.sub(boid.position, this.position)));
       }
+    }
+
+    return c.limit(this.maxForce).mult(1.5);
+  }
+
+  separation(boids) {
+    var c = new Vector2();
+    var count = 0;
+
+    for (var boid of boids) {
+      boid = boid.userData;
+      if (boid != this) {
+        let d = Vector2.dist(this.position, boid.position);
+        let diff = Vector2.sub(this.position, boid.position);
+        diff = diff.normalize();
+        diff.div_ip(d);
+        c = Vector2.add(c, diff);
+
+        count++;
+      }
+
+    }
+
+    if (count > 0) {
+      c.div_ip(count);
+    }
+
+    if (c.mag > 0) {
+      c.mag = this.maxSpeed;
+      c = Vector2.sub(c, this.velocity);
+      c = c.limit(this.maxForce);
     }
 
     return c;
@@ -60,7 +93,8 @@ class Boid {
 
       // Implement Reynolds: Steering = Desired - Velocity
       let steer = Vector2.sub(pv, this.velocity);
-      return Vector2.div(steer, this.alignment_factor);
+      steer = Vector2.div(steer, this.alignment_factor);
+      return steer.limit(this.maxForce);
     } else {
       return new Vector2();
     }
@@ -82,7 +116,8 @@ class Boid {
 
       // Implement Reynolds: Steering = Desired - Velocity
       let steer = Vector2.sub(pc, this.position);
-      return Vector2.div(steer, this.cohesion_factor);
+      steer = Vector2.div(steer, this.cohesion_factor);
+      return steer.limit(this.maxForce);
     } else {
       return new Vector2();
     }
@@ -90,14 +125,14 @@ class Boid {
 
   update(allBoids, closeBoids) {
 
-    var sep = this.separation(closeBoids);
+    var sep = this.separation(allBoids).mult(1.5);
     var align = this.alignment(allBoids);
     var coh = this.cohesion(allBoids);
 
     this.velocity = Vector2.add(this.velocity, sep);
     this.velocity = Vector2.add(this.velocity, align);
     this.velocity = Vector2.add(this.velocity, coh);
-    //this.velocity.limit2(this.maxSpeed);
+    //this.velocity.limit(this.maxSpeed);
     this.velocity.mag = this.maxSpeed;
     this.position = Vector2.add(this.position, this.velocity);
     this.accelaration.mult_ip(0);
@@ -109,7 +144,7 @@ class Boid {
     let lineLength = 5;
 
     // draw center of boid
-    drawPoint(this.position.x, this.position.y, r, "white");
+    // drawPoint(this.position.x, this.position.y, r, "white");
 
     // rotation test
 

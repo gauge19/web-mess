@@ -160,14 +160,14 @@ class Vector2 {
 
    Vector2 object
    */
-  static random(width, height) {
-    if (!width) {
-      width = gameCanvas.width;
+  static random(maxX, maxY) {
+    if (!maxX) {
+      maxX = gameCanvas.width;
     }
-    if (!height) {
-      height = gameCanvas.height;
+    if (!maxY) {
+      maxY = gameCanvas.height;
     }
-    return new Vector2(random.random(width), random.random(height));
+    return new Vector2(random.random(maxX), random.random(maxY));
   }
 
   /**
@@ -200,10 +200,8 @@ class Vector2 {
    * @param {number} v Maximum (and negative minimum) value
    */
   limit(v) {
-    if (this.mag > v) {
-      this.div_ip(this.mag)
-      this.mult_ip(v);
-    }
+    let c = this.normalize();
+    return c.mult(v);
   }
 
   /**
@@ -496,4 +494,13 @@ function drawPoint(x, y, r=3, color="red") {
   ctx.fillStyle = color;
   ctx.arc(x, y, r, 0, 2*Math.PI);
   ctx.fill();
+}
+
+function drawLine(x1, y1, x2, y2, color="red") {
+  let ctx = canvas.context;
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
 }

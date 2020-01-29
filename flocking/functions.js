@@ -22,4 +22,10 @@ class Slider {
       boid.maxSpeed = v;
     }
   }
+
+  static drawlines(checkbox) {
+    let state = checkbox.checked;
+    console.log(state);
+    drawlines = state;
+  }
 }

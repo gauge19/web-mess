@@ -54,10 +54,10 @@ document.addEventListener("mousedown", event_mousedown);
 
 // variables
 const canvas_boundary = new Rectangle(canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2);
-// var v1 = new Vector2(3, 4);
+var drawlines = false;
 
 // create boids
-const boidCount = 70;
+const boidCount = 50;
 var boids = [];
 for (var i = 0; i < boidCount; i++) {
   boids.push(new Boid());
@@ -89,6 +89,14 @@ function main() {
       boid.update(allBoids, closeBoids);
       boid.draw(canvas);
     });
+
+    // draw lines from one boid to every other
+    if (drawlines) {
+      var b = boids[0];
+      for (var i = 1; i < boids.length; i++) {
+        drawLine(b.position.x, b.position.y, boids[i].position.x, boids[i].position.y);
+      }
+    }
 
     main();
   }, GAME_SPEED)
