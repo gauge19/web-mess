@@ -1,4 +1,4 @@
-class random {
+export class random {
   static random(min, max) {
     //console.log("min", min, "max", max);
     if (!(typeof min == "undefined") && max) {
@@ -79,22 +79,16 @@ class random {
   }
 }
 
-class Canvas {
-  constructor(id, w, h) {
+export class Canvas {
+  constructor(id) {
     this.canvas = document.getElementById(id);
-
-    // check for optional parameters
-    if (w) {
-      this.width = w;
-    }
-    if (h) {
-      this.height = h;
-    }
 
     this.context = this.canvas.getContext("2d");
 
     this.background = "black";
     this.border = "grey";
+
+    this.mode = "NORMAL";
   }
 
   get width() {
@@ -120,9 +114,70 @@ class Canvas {
     // Draw a "border" around the entire canvas
     this.context.strokeRect(0, 0, this.width, this.height);
   }
+
+  /** Draws filled circle at the coordinates of x and y.
+   * @param {number} x X coordinate
+   * @param {number} y Y coordinate
+   * @param {number} r Radius of the circle, 3 is default.
+   * @param {string} color Color of the circle, red is default.
+   */
+  drawPoint(x, y, r=3, color="red") {
+    let ctx = this.context;
+    ctx.beginPath();
+    ctx.fillStyle = color;
+
+    if (this.mode == "CENTER") {
+      x = this.width/2 + x;
+      y = this.height/2 + y;
+    }
+
+    ctx.arc(x, y, r, 0, 2*Math.PI);
+    ctx.fill();
+  }
+
+  /** Draws line between points A(x1, y1) and B(x2, y2).
+   * @param {number} x1 X coordinate of point A
+   * @param {number} y1 Y coordinate of point A
+   * @param {number} x2 X coordinate of point B
+   * @param {number} y2 Y coordinate of point B
+   * @param {string} color Color of the line, red is default.
+   */
+  drawLine(x1, y1, x2, y2, color="red") {
+    let ctx = this.context;
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+
+    if (this.mode == "CENTER") {
+      x1 = this.width/2 + x1;
+      x2 = this.width/2 + x2;
+      y1 = this.height/2 + y1;
+      y2 = this.height/2 + y2;
+    }
+
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  setMode(m) {
+    if (m == "CENTER") {
+      this.mode = m;
+    } else {
+      console.log("m is either undefined or invalide input:", m);
+    }
+  }
 }
 
-class Vector2 {
+/** @class Creates a 2D Vector object. */
+export class Vector2 {
+
+  /**
+   * @constructor
+   * @author gauge19
+   * @param {number} x X value of this Vector. Optional, 0 if omitted.
+   * @param {number} y Y value of this Vector. Optional, 0 if omitted.
+   */
   constructor(x=0, y=0) {
     this.x = x;
     this.y = y;
@@ -145,55 +200,20 @@ class Vector2 {
     this.y = len*Math.sin(h);
   }
 
+  /**
+   * Logs x and y values as well as magnitude and heading angle to the console.
+   */
   log() {
-    console.log("Vector2 x: " + this.x + ", y: " + this.y);
+    console.log("Vector2 x: " + this.x + ", y: " + this.y + ". mag: " + this.mag + ", heading: " + this.heading_deg());
   }
+  /**
+   * Returns string, containing x and y values of this vector.
+   * @returns {String} String, containing x and y values of this vector.
+   */
   toString() {
     return "x: " + this.x + ", y: " + this.y;
   }
 
-  /**
-  * Returns a new Vector2 object with random coordinates within the given width and height range.
-   * @param {number} width Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
-   * @param {number} height Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
-   * @returns {Object}
-
-   Vector2 object
-   */
-  static random(maxX, maxY) {
-    if (!maxX) {
-      maxX = gameCanvas.width;
-    }
-    if (!maxY) {
-      maxY = gameCanvas.height;
-    }
-    return new Vector2(random.random(maxX), random.random(maxY));
-  }
-
-  /**
-  * Calculates the squared distance between two vectors.
-   Use for comparing two distances and finding the shorter one.
-   d1>d2 --> d1^2>d2^2
-   Much faster than calculating euclidean distance (Vector2.dist()) many times.
-   * @param {Object} v1 Vector2 object
-   * @param {Object} v2 Vector2 object
-   * @returns {number} Squared distance between v1 and v2.
-   */
-  static dist2(v1, v2) {
-    const x = Math.abs(v2.x - v1.x);
-    const y = Math.abs(v2.y - v1.y);
-    return Math.pow(x, 2) + (y, 2);
-  }
-
-  /**
-  * Calculates the euclidean distance between two vectors.
-   * @param {Object} v1 Vector2 object
-   * @param {Object} v2 Vector2 object
-   * @returns {number} Euclidean distance between v1 and v2.
-   */
-  static dist(v1, v2) {
-    return Math.sqrt(this.dist2(v1, v2));
-  }
 
   /**
    * Limits x and y value to v. Possibly doesn't work.
@@ -234,8 +254,7 @@ class Vector2 {
   }
 
   /**
-   * Returns new vector which is this vector, rotated counter-clockwise by a given angle theta.
-   0° is to the right of the Vector head.
+   * Rotates this vector counter-clockwise by a given angle theta, starting from the right hand side.
    Heading angle (this.heading_deg()) should be considered for rotation.
    Add this.heading_deg() to theta to get rotation without angle of direction. Only works if x and y are greater than 0 though.
    * @param {number} theta Angle to be rotated in degrees
@@ -252,9 +271,87 @@ class Vector2 {
     // matrix multiplication with rotation matrix and current vector to rotate it
     let x = matrix[0][0] * this.x + matrix[0][1] * this.y;
     let y = matrix[1][0] * this.x + matrix[1][1] * this.y;
+    x = parseFloat(Number.parseFloat(x).toFixed(4));
+    y = parseFloat(Number.parseFloat(y).toFixed(4));
     return new Vector2(x, y);
   }
 
+  /* Vector operations */
+  /**
+   * Adds a vector to this vector in place.
+   * @param {Object} v Vector2 object to be added
+   */
+  add(v) {
+   this.x += v.x;
+   this.y += v.y;
+  }
+
+  /**
+   * Subtracts a vector from this vector in place.
+   * @param {Object} v Vector2 object to be subtracted
+   */
+  sub(v) {
+   this.x -= v.x;
+   this.y -= v.y;
+  }
+
+  /**
+   * Multiplies this vector by another vector in place.
+   * @param {Object} v Vector2 object to be multiplied by
+   */
+  mult(v) {
+   this.x *= v.x;
+   this.y *= v.y;
+  }
+
+  /**
+   * Divides this vector by another vector in place.
+   * @param {Object} v Vector2 object to be divided by
+   */
+  div(v) {
+   this.x /= v.x;
+   this.y /= v.y;
+  }
+
+  /**
+   * Adds a scalar to this vector in place.
+   * @param {number} scalar Scalar to be added
+   */
+  add_scalar(scalar) {
+    this.x += scalar;
+    this.y += scalar;
+  }
+
+  /**
+   * Subtracts a scalar from this vector in place.
+   * @param {number} scalar Scalar to be subtracted
+   */
+  sub_scalar(scalar) {
+    this.x -= scalar;
+    this.y -= scalar;
+  }
+
+  /**
+   * Multiplies this vector by a scalar in place.
+   * @param {number} scalar Scalar to be multiplied
+   */
+  mult_scalar(scalar) {
+    this.x*=scalar;
+    this.y*=scalar;
+  }
+
+  /**
+   * Divides this vector by a scalar in place.
+   * @param {number} scalar Scalar to be divided by
+   */
+  div_scalar(scalar) {
+    this.x/=scalar;
+    this.y/=scalar;
+  }
+
+  /* Static methods below */
+
+  /* Vector-Vector methods */
   /**
    * Adds two vectors to each other and returns new Vector2 object
    * @param {Object} v1 Vector2 object
@@ -262,71 +359,124 @@ class Vector2 {
    * @returns {Object} Vector2 object
    */
   static add(v1, v2) {
-     return new Vector2(v1.x+v2.x, v1.y+v2.y);
-   }
+    return new Vector2(v1.x+v2.x, v1.y+v2.y);
+  }
 
-   /**
+  /**
    * Subtracts two vectors from each other and returns new Vector2 object
    * @param {Object} v1 Vector2 object
    * @param {Object} v2 Vector2 object
    * @returns {Object} Vector2 object
    */
-   static sub(v1, v2) {
-     return new Vector2(v1.x-v2.x, v1.y-v2.y);
-   }
-
-  /**
-   * Adds a scalar to this vector (in place)
-   * @param {Object} scalar Vector to be added
-   */
-  add_ip(scalar) {
-    this.x += scalar;
-    this.y += scalar;
+  static sub(v1, v2) {
+    return new Vector2(v1.x-v2.x, v1.y-v2.y);
   }
 
   /**
-   * Subs a scalar from this vector (in place)
-   * @param {Object} scalar Scalar to be subbed
-   */
-  sub_ip(scalar) {
-    this.x -= scalar;
-    this.y -= scalar;
-  }
-
-  /**
-   * Returns new vector with a sclar multiplied to this vector
-   * @param {number} scalar to be multiplied by
+   * Multiplies one vector by another and returns new Vector2 object
+   * @param {Object} v1 Vector2 object
+   * @param {Object} v2 Vector2 object
    * @returns {Object} Vector2 object
    */
-  mult(scalar) {
-    return new Vector2(this.x*scalar, this.y*scalar);
+  static mult(v1, v2) {
+    return new Vector2(v1.x*v2.x, v1.y*v2.y);
   }
 
   /**
-   * Multiplies a scalar to this vector (in place)
-   * @param {number} scalar -  number to be multiplied by
-   */
-  mult_ip(scalar) {
-    this.x*=scalar;
-    this.y*=scalar;
-  }
-
-  /**
-   * Returns new vector with a sclar divided from this vector
-   * @param {number} scalar to be divided by
+   *  Divides two vectors by each other and returns new Vector2 object
+   * @param {Object} v1 Vector2 object
+   * @param {Object} v2 Vector2 object
    * @returns {Object} Vector2 object
    */
-  static div(v1, scalar) {
-    return new Vector2(v1.x/scalar, v1.y/scalar);
+  static div(v1, v2) {
+    return new Vector2(v1.x/v2.x, v1.y/v2.y);
+  }
+
+  /* Vector-Scalar methods */
+  /**
+   * Returns new vector with with a scalar added to a vector.
+   * @param {Object} v Vector2 object
+   * @param {number} scalar Scalar to be added to v
+   * @returns {Object} Vector2 object
+   */
+  static add_scalar(v, scalar) {
+    return new Vector2(v.x+scalar, v.y+scalar);
   }
 
   /**
-   * Divides a scalar from this vector (in place)
-   * @param {number} scalar -  number to be divided by
+   * Returns new vector with with a scalar subtracted from a vector.
+   * @param {Object} v Vector2 object
+   * @param {number} scalar Scalar to be subtracted from v
+   * @returns {Object} Vector2 object
    */
-  div_ip(scalar) {
-    this.x/=scalar;
-    this.y/=scalar;
+  static sub_scalar(v, scalar) {
+    return new Vector2(v.x-scalar, v.y-scalar);
+  }
+
+  /**
+   * Returns new vector with with vector multiplied by a scalar.
+   * @param {Object} v Vector2 object
+   * @param {number} scalar Scalar to be multiplied to v
+   * @returns {Object} Vector2 object
+   */
+  static mult_scalar(v, scalar) {
+    return new Vector2(v.x*scalar, v.y*scalar);
+  }
+
+  /**
+   * Returns new vector with with vector divided by a scalar.
+   * @param {Object} v Vector2 object
+   * @param {number} scalar Scalar to be divided from v
+   * @returns {Object} Vector2 object
+   */
+  static div_scalar(v, scalar) {
+    return new Vector2(v.x/scalar, v.y/scalar);
+  }
+
+  /* Other methods */
+  /**
+   * Returns a new Vector2 object with random coordinates within the given width and height range.
+   * @param {number} width Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} height Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @returns {Object} Vector2 object
+   */
+  static random(maxX, maxY) {
+    if (!maxX) {
+      maxX = gameCanvas.width;
+    }
+    if (!maxY) {
+      maxY = gameCanvas.height;
+    }
+    return new Vector2(random.random(maxX), random.random(maxY));
+  }
+
+  /**
+   * Calculates the squared distance between two vectors.
+   Use for comparing two distances and finding the shorter one.
+   d1>d2 --> d1^2>d2^2
+   Much faster than calculating euclidean distance (Vector2.dist()) many times.
+   * @param {Object} v2 Vector2 object
+   * @returns {number} Squared distance between v1 and v2.
+   */
+  static dist2(v1, v2) {
+    const x = Math.abs(v2.x - v1.x);
+    const y = Math.abs(v2.y - v1.y);
+
+    return Math.pow(x, 2) + Math.pow(y, 2); // distance squared
+  }
+
+  /**
+   * Calculates the euclidean distance between two vectors.
+   * @param {Object} v1 Vector2 object
+   * @param {Object} v2 Vector2 object
+   * @returns {number} Euclidean distance between v1 and v2.
+   */
+  static dist(v1, v2) {
+    const x = Math.abs(v2.x - v1.x);
+    const y = Math.abs(v2.y - v1.y);
+    const d2 = Math.pow(x, 2) + Math.pow(y, 2); // distance squared
+
+    return Math.sqrt(d2);
   }
 
   /**
@@ -340,7 +490,16 @@ class Vector2 {
   }
 }
 
-class Vector3 {
+/** @class Creates a 3D Vector object. */
+export class Vector3 {
+
+  /**
+   * @constructor
+   * @author gauge19
+   * @param {number} x X value of this Vector. Optional, 0 if omitted.
+   * @param {number} y Y value of this Vector. Optional, 0 if omitted.
+   * @param {number} z Z value of this Vector. Optional, 0 if omitted.
+   */
   constructor(x=0, y=0, z=0) {
     this.x = x;
     this.y = y;
@@ -366,34 +525,208 @@ class Vector3 {
     this.y = len*Math.sin(h);
   }
 
+  /**
+   * Logs x, y and z values as well as magnitude and heading angle to the console.
+   */
   log() {
-    console.log("Vector3 x: " + this.x + ", y: " + this.y + ", z: " + this.z);
+    console.log("Vector3 x: " + this.x + ", y: " + this.y + ", z: " + this.z + ". mag: " + this.mag + ", heading: " + this.heading_deg());
   }
+  /**
+   * Returns string, containing x, y and z values of this vector.
+   * @returns {String} String, containing x, y and z values of this vector.
+   */
   toString() {
     return "x: " + this.x + ", y: " + this.y + ", z: " + this.z;
   }
 
   /**
-  * Returns a new Vector2 object with random coordinates within the given width and height range.
-   * @param {number} width Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
-   * @param {number} height Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
-   * @returns {Object}
-
-   Vector2 object
+   * Returns this vector normalized, meaning x, y and z values are between 0 and 1 but keep their relative magnitude.
+   * @returns {Object} normalized Vector3 object
    */
-  static random(width, height, depth) {
-    if (!width) {
-      width = gameCanvas.width;
-    }
-    if (!height) {
-      height = gameCanvas.height;
-    }
-    if (!depth) {
-      depth = gameCanvas.depth;
-    }
-    return new Vector3(random.random(width), random.random(height), random.random(depth));
+  normalize() {
+    console.log("normalize() doesn't yet work for Vector3 objects");
+    return new Vector3();
   }
 
+  /**
+   * Returns angle of direction in radiants.
+   * @returns {number} angle
+   */
+  heading() {
+    console.log("heading() doesn't yet work for Vector3 objects");
+    return 0;
+  }
+
+  /**
+   * Returns angle of direction in degrees.
+   * @returns {number} angle
+   */
+  heading_deg() {
+    return this.heading()*(180/Math.PI);
+  }
+
+  /**
+   * Rotates this vector around a given axis by a given angle theta.
+   * @param {number} theta Angle to be rotated in degrees
+   * @param {number} axis Axis to be rotated around
+   * @returns {Object} rotated Vector3 object
+   */
+  rotate(theta, axis) {
+    // "force" angle onto circle (370° --> 10° because it's 30 above 360)
+    const angle = deg_to_rad(theta%360); // convert angle to radiants
+
+    var rotation;
+
+    if (axis == "x" || axis == "X") {
+      let rotationX = [[1, 0, 0],
+                       [0, Math.cos(angle), -Math.sin(angle)],
+                       [0, Math.sin(angle), Math.cos(angle)]];
+      rotation = rotationX;
+    }
+    if (axis == "y" || axis == "Y") {
+      let rotationY = [[Math.cos(angle), 0, Math.sin(angle)],
+                       [0, 1, 0],
+                       [-Math.sin(angle), 0, Math.cos(angle)]];
+      rotation = rotationY;
+    }
+    if (axis == "z" || axis == "Z") {
+      let rotationZ = [[Math.cos(angle), -Math.sin(angle), 0],
+                       [Math.sin(angle), Math.cos(angle), 0],
+                       [0, 0, 1]];
+      rotation = rotationZ;
+    }
+
+    const x = rotation[0][0]*this.x+rotation[0][1]*this.y+rotation[0][2]*this.z;
+    const y = rotation[1][0]*this.x+rotation[1][1]*this.y+rotation[1][2]*this.z;
+    const z = rotation[2][0]*this.x+rotation[2][1]*this.y+rotation[2][2]*this.z;
+
+    return new Vector3(x, y, z);
+  }
+
+  /**
+   * Projects a 3d vector into 2d space.
+   * @param {number} distance Distance from the camera
+   * @returns {Object} Vector2 object
+   */
+  project(distance=10) {
+    const fov=90; // field of view
+    //let s = 1/(Math.tan((fov/2)*(Math.PI/180)));
+    let s = 1 / (this.z);
+    s = parseFloat(Number.parseFloat(s).toFixed(4));
+
+    if (distance != 10) {
+      console.log("distance is not 10,", distance, "s:", s);
+    }
+
+    // // projection matrix
+    // const projection = [[s, 0, 0],
+    //                     [0, s, 0]];
+    //
+    // // calculate coordinates of new vectors
+    // const x = projection[0][0]*this.x+projection[0][1]*this.y+projection[0][2]*this.z;
+    // const y = projection[1][0]*this.x+projection[1][1]*this.y+projection[1][2]*this.z;
+
+    const hw = 600/2;
+    const hh = 400/2;
+    const fl_top = hw / Math.tan(fov/2);
+    const fl_side = hh / Math.tan(fov/2);
+
+    const d = (fl_top + fl_side) / 2;
+
+    //console.log(d);
+
+    const x = (this.x*d) / (this.z+d);
+    const y = (this.y*d) / (this.z+d);
+
+    // console.log(this.x, x, this.y, y);
+
+    return new Vector2(x, y); // create new Vector2 with calculated coordinates
+  }
+
+  /* Vector operations */
+  /**
+   * Adds a vector to this vector in place.
+   * @param {Object} v Vector3 object to be added
+   */
+  add(v) {
+   this.x += v.x;
+   this.y += v.y;
+   this.z += v.z;
+  }
+
+  /**
+   * Subtracts a vector from this vector in place.
+   * @param {Object} v Vector3 object to be subtracted
+   */
+  sub(v) {
+   this.x -= v.x;
+   this.y -= v.y;
+   this.z -= v.z;
+  }
+
+  /**
+   * Multiplies this vector by another vector in place.
+   * @param {Object} v Vector3 object to be multiplied by
+   */
+  mult(v) {
+   this.x *= v.x;
+   this.y *= v.y;
+   this.z *= v.z;
+  }
+
+  /**
+   * Divides this vector by another vector in place.
+   * @param {Object} v Vector3 object to be divided by
+   */
+  div(v) {
+   this.x /= v.x;
+   this.y /= v.y;
+   this.z /= v.z;
+  }
+
+  /**
+   * Adds a scalar to this vector in place.
+   * @param {number} scalar Scalar to be added
+   */
+  add_scalar(scalar) {
+    this.x += scalar;
+    this.y += scalar;
+    this.z += scalar;
+  }
+
+  /**
+   * Subtracts a scalar from this vector in place.
+   * @param {number} scalar Scalar to be subtracted
+   */
+  sub_scalar(scalar) {
+    this.x -= scalar;
+    this.y -= scalar;
+    this.z -= scalar;
+  }
+
+  /**
+   * Multiplies this vector by a scalar in place.
+   * @param {number} scalar Scalar to be multiplied
+   */
+  mult_scalar(scalar) {
+    this.x*=scalar;
+    this.y*=scalar;
+    this.z*= scalar;
+  }
+
+  /**
+   * Divides this vector by a scalar in place.
+   * @param {number} scalar Scalar to be divided by
+   */
+  div_scalar(scalar) {
+    this.x/=scalar;
+    this.y/=scalar;
+    this.z/=scalar;
+  }
+
+  /* Static methods below */
+
+  /* Vector-Vector methods */
   /**
    * Adds two vectors to each other and returns new Vector3 object
    * @param {Object} v1 Vector3 object
@@ -401,106 +734,185 @@ class Vector3 {
    * @returns {Object} Vector3 object
    */
   static add(v1, v2) {
-     return new Vector3(v1.x+v2.x, v1.y+v2.y, v1.z+v1.z);
+    return new Vector3(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
   }
 
   /**
-  * Subtracts two vectors from each other and returns new Vector3 object
-  * @param {Object} v1 Vector3 object
-  * @param {Object} v2 Vector3 object
-  * @returns {Object} Vector3 object
-  */
-  static sub(v1, v2) {
-    return new Vector3(v1.x-v2.x, v1.y-v2.y, v1.z-v1.z);
-  }
-
-  /**
-  * Returns new vector with a sclar multiplied to this vector
-  * @param {number} scalar to be divided by
-  * @returns {Object} Vector3 object
-  */
-  static mult(v1, scalar) {
-    return new Vector3(v1.x*scalar, v1.y*scalar, v1.z*scalar);
-  }
-
-  /**
-   * Returns new vector with a sclar divided from this vector
-   * @param {number} scalar to be divided by
+   * Subtracts two vectors from each other and returns new Vector3 object
+   * @param {Object} v1 Vector3 object
+   * @param {Object} v2 Vector3 object
    * @returns {Object} Vector3 object
    */
-  static div(v1, scalar) {
-    return new Vector3(v1.x/scalar, v1.y/scalar, v1.z/scalar);
+  static sub(v1, v2) {
+    return new Vector3(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
   }
 
   /**
-   * Adds a scalar to this vector (in place)
-   * @param {Object} scalar to be added
+   * Multiplies one vector by another and returns new Vector3 object
+   * @param {Object} v1 Vector3 object
+   * @param {Object} v2 Vector3 object
+   * @returns {Object} Vector3 object
    */
-  add_ip(scalar) {
-    this.x += scalar;
-    this.y += scalar;
-    this.z += scalar;
+  static mult(v1, v2) {
+    return new Vector3(v1.x*v2.x, v1.y*v2.y, v1.z*v2.z);
   }
 
   /**
-   * Subtracts a scalar from this vector (in place)
-   * @param {Object} scalar to be subtracted
+   *  Divides two vectors by each other and returns new Vector3 object
+   * @param {Object} v1 Vector3 object
+   * @param {Object} v2 Vector3 object
+   * @returns {Object} Vector3 object
    */
-  sub_ip(scalar) {
-    this.x += scalar;
-    this.y += scalar;
-    this.z += scalar;
+  static div(v1, v2) {
+    return new Vector3(v1.x/v2.x, v1.y/v2.y, v1.z/v2.z);
+  }
+
+  /* Vector-Scalar methods */
+  /**
+   * Returns new vector with with a scalar added to a vector.
+   * @param {Object} v Vector3 object
+   * @param {number} scalar Scalar to be added to v
+   * @returns {Object} Vector3 object
+   */
+  static add_scalar(v, scalar) {
+    return new Vector3(v.x+scalar, v.y+scalar, v.z+scalar);
   }
 
   /**
-   * Multiplies a scalar to this vector (in place)
-   * @param {Object} scalar to be multiplied
+   * Returns new vector with with a scalar subtracted from a vector.
+   * @param {Object} v Vector3 object
+   * @param {number} scalar Scalar to be subtracted from v
+   * @returns {Object} Vector3 object
    */
-  mult_ip(scalar) {
-    this.x *= scalar;
-    this.y *= scalar;
-    this.z *= scalar;
+  static sub_scalar(v, scalar) {
+    return new Vector3(v.x-scalar, v.y-scalar, v.z-scalar);
   }
 
   /**
-   * Divides a scalar from this vector (in place)
-   * @param {Object} scalar to be divided
+   * Returns new vector with with vector multiplied by a scalar.
+   * @param {Object} v Vector3 object
+   * @param {number} scalar Scalar to be multiplied to v
+   * @returns {Object} Vector3 object
    */
-  div_ip(scalar) {
-    this.x /= scalar;
-    this.y /= scalar;
-    this.z /= scalar;
+  static mult_scalar(v, scalar) {
+    return new Vector3(v.x*scalar, v.y*scalar, v.z*scalar);
   }
 
+  /**
+   * Returns new vector with with vector divided by a scalar.
+   * @param {Object} v Vector3 object
+   * @param {number} scalar Scalar to be divided from v
+   * @returns {Object} Vector3 object
+   */
+  static div_scalar(v, scalar) {
+    return new Vector3(v.x/scalar, v.y/scalar, v.z/scalar);
+  }
+
+  /* Other methods */
+  /**
+   * Returns a new Vector3 object with random coordinates within the given width and height range.
+   * @param {number} maxX Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} maxY Optional. Maximum y coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} maxZ Optional. Maximum z coordinate the vector should have. 0 is default.
+   * @returns {Object} Vector3 object
+   */
+  static random(maxX, maxY, maxZ) {
+    if (!maxX) {
+      maxX = gameCanvas.width;
+    }
+    if (!maxY) {
+      maxY = gameCanvas.height;
+    }
+    if (!maxZ) {
+      maxZ = 0;
+    }
+
+    return new Vector3(random.random(maxX), random.random(maxY), random.random(maxZ));
+  }
+
+  /**
+  * Calculates the squared distance between two vectors.
+  Use for comparing two distances and finding the shorter one.
+  d1>d2 --> d1^2>d2^2
+  Much faster than calculating euclidean distance (Vector3.dist()) many times.
+  * @param {Object} v1 Vector3 object
+  * @param {Object} v2 Vector3 object
+  * @returns {number} Squared distance between v1 and v2.
+  */
+  static dist2(v1, v2) {
+    const dx = Math.abs(v2.x - v1.x);
+    const dy = Math.abs(v2.y - v1.y);
+    const dz = Math.abs(v2.z - v1.z);
+
+    return Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2); // distance squared
+  }
+
+  /**
+  * Calculates the euclidean distance between two vectors.
+  * @param {Object} v1 Vector3 object
+  * @param {Object} v2 Vector3 object
+  * @returns {number} Euclidean distance between v1 and v2.
+  */
+  static dist(v1, v2) {
+    const dx = Math.abs(v2.x - v1.x);
+    const dy = Math.abs(v2.y - v1.y);
+    const dz = Math.abs(v2.z - v1.z);
+    const d2 = Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2); // distance squared
+
+    return Math.sqrt(d2);
+  }
+
+  /**
+   * Calculates cross product of two vectors.
+   * @param {Object} v1 Vector3 object
+   * @param {Object} v2 Vector3 object
+   * @returns {number} Cross product of v1 and v2.
+   */
+  static cross(v1, v2) {
+    let v1a = [v1.y, v1.z, v1.x, v1.y];
+    let v2a = [v2.y, v2.z, v2.x, v2.y];
+    let x = v1a[0]*v2a[1]-v1a[1]*v2a[0];
+    let y = v1a[1]*v2a[2]-v1a[2]*v2a[1];
+    let z = v1a[2]*v2a[3]-v1a[3]*v2a[2];
+    return new Vector3(x, y, z);
+  }
 }
 
-function rad_to_deg(rad) {
+export default class Sketch {
+  constructor(id) {
+    this.GAMESPEED = 30;
+    this.canvas = new Canvas(id);
+  }
+
+  draw(loop) {
+    var t = this;
+    setTimeout(function onTick() {
+      loop();
+      t.draw(loop);
+    }, this.GAME_SPEED);
+  }
+}
+
+export function rad_to_deg(rad) {
   return rad*(180/Math.PI);
 }
 
-function deg_to_rad(deg) {
+export function deg_to_rad(deg) {
   return deg*(Math.PI/180);
 }
 
-/** Draws filled circle at the coordinates of x and y.
- * @param {number} x X coordinate
- * @param {number} y Y coordinate
- * @param {number} r Radius of the circle, 3 is default.
- * @param {string} color Color of the circle, red is default.
- */
-function drawPoint(x, y, r=3, color="red") {
-  let ctx = canvas.context;
-  ctx.beginPath();
-  ctx.fillStyle = color;
-  ctx.arc(x, y, r, 0, 2*Math.PI);
-  ctx.fill();
+export function map(n, start1, stop1, start2, stop2, withinBounds) {
+  const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+  if (!withinBounds) {
+    return newval;
+  }
+  if (start2 < stop2) {
+    return constrain(newval, start2, stop2);
+  } else {
+    return constrain(newval, stop2, start2);
+  }
 }
 
-function drawLine(x1, y1, x2, y2, color="red") {
-  let ctx = canvas.context;
-  ctx.beginPath();
-  ctx.strokeStyle = color;
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.stroke();
+function constrain(n, low, high) {
+  return Math.max(Math.min(n, high), low);
 }
