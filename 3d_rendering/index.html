@@ -12,7 +12,10 @@
       var ay = Math.PI/10; // angle of rotation along y axis
       var az = Math.PI/10; // angle of rotation along z axis
       var a_change = Math.PI/100; // change per frame (~1% of full rotation which is Pi or 3.14)
-      var a_update = 0; // used for auto rotation;
+      var ax_update = 0; // used for auto rotation;
+      var ay_update = 0; // used for auto rotation;
+      var az_update = 0; // used for auto rotation;
+      var friction = Math.PI/1000;
     </script>
     <script src="src/functions.js" charset="utf-8"></script>
   </head>

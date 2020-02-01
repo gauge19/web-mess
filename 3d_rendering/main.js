@@ -5,6 +5,10 @@ var s = new Sketch("gameCanvas");
 s.canvas.setMode("CENTER"); // draw relative to center
 
 document.addEventListener("keydown", event_keypress);
+document.addEventListener("mousedown", event_mousedown);
+
+var clicked_left = false;
+var clicked_right = false;
 
 // defined in index.html to be used with sliders
 /*
@@ -48,9 +52,24 @@ s.draw(function () {
   }
 
   // increase angle every frame to make it rotate automatically, handled by sliders
-  ax += a_update;
-  ay += a_update;
-  az += a_update;
+  ax += ax_update;
+  ay += ay_update;
+  az += az_update;
+
+  if (clicked_left) {
+    ay_update -= friction;
+    if (ay_update <= 0) {
+      clicked_left = false;
+      ay_update = 0;
+    }
+  }
+  if (clicked_right) {
+    ay_update += friction;
+    if (ay_update >= 0) {
+      clicked_right = false;
+      ay_update = 0;
+    }
+  }
 
 })
 
@@ -84,5 +103,22 @@ function event_keypress(event) {
   }
   else {
     console.log("Key pressed: " + keyPressed);
+  }
+}
+function event_mousedown(event) {
+
+  let rect = s.canvas.canvas.getBoundingClientRect();
+  let x = event.clientX - rect.left;
+  let y = event.clientY - rect.top;
+
+  // console.log(x, y);
+  const click_strength = 50;
+
+  if (x > 0 && x < s.canvas.width/2) {
+    clicked_left = true;
+    ay_update = a_change*click_strength;
+  } else if (x > s.canvas.width/2 && x < s.canvas.width) {
+    clicked_right = true;
+    ay_update = -a_change*click_strength;
   }
 }
