@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript">
+      var rotationSpeed = 0;
+      var rotationAngle = 0;
+
+    </script>
+
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <script type="module" src="main.js" charset="utf-8"></script>
+    <script src="htmlobjects.js" charset="utf-8"></script>
+
+    <br>
+    <label for="speed">
+      <input class="sliders" id="speed" type="range" value="0" min="0" max="10" step="0.1" oninput="changeSpeed(this.value)">
+      Rotation speed
+    </label>
+    <br>
+    <label for="angle">
+      <input class="sliders" id="angle" type="range" value="0" min="0" max="359" step="3.6" oninput="changeAngle(this.value)">
+      Rotation angle
+    </label>
+
+  </body>
+</html>
