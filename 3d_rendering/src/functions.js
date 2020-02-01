@@ -1,5 +1,5 @@
 function slider_radius(value) {
-  r = value;
+  r = parseInt(value);
 }
 
 function slider_rotation(axis, value) {
