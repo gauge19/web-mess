@@ -129,10 +129,11 @@ class Boid {
     var align = this.alignment(allBoids);
     var coh = this.cohesion(allBoids);
 
-    this.velocity = Vector2.add(this.velocity, sep);
-    this.velocity = Vector2.add(this.velocity, align);
-    this.velocity = Vector2.add(this.velocity, coh);
+    this.accelaration = Vector2.add(this.accelaration, sep);
+    this.accelaration = Vector2.add(this.accelaration, align);
+    this.accelaration = Vector2.add(this.accelaration, coh);
     //this.velocity.limit(this.maxSpeed);
+    this.velocity = Vector2.add(this.velocity, this.accelaration);
     this.velocity.mag = this.maxSpeed;
     this.position = Vector2.add(this.position, this.velocity);
     this.accelaration.mult_ip(0);

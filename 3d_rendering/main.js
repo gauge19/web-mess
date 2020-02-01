@@ -62,7 +62,7 @@ function main() {
     var projected_arr = []; // all the newly calculated vertices
     var index = 0;
     for (point of points) {
-      projected_arr[index] = point.rotate(ax, "x").rotate(ay, "y").rotate(az, "z").project();
+      projected_arr[index] = point.rotate(ax, "x").rotate(ay, "y").rotate(az, "z").project(200);
 
       index++;
     }

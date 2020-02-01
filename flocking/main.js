@@ -1,6 +1,6 @@
 const GAME_SPEED = 30;
 
-var canvas = new Canvas("gameCanvas", 600, 400);
+var canvas = new Canvas("gameCanvas");
 
 var running = true;
 main();

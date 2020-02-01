@@ -103,8 +103,8 @@ class Vertex {
 
     if (axis=="x" || axis=="X") {
       var rotationX = [[1, 0, 0],
-                      [0, Math.cos(angle), -Math.sin(angle)],
-                      [0, Math.sin(angle), Math.cos(angle)]];
+                       [0, Math.cos(angle), -Math.sin(angle)],
+                       [0, Math.sin(angle), Math.cos(angle)]];
       v.set_vector(matmul(rotationX, this.vector));
     }
     else if (axis=="y" || axis=="Y") {
