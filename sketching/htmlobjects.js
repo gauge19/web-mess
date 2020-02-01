@@ -1,7 +1,13 @@
 function changeSpeed(s) {
-  rotationSpeed = s/10;
+  rotationSpeed = parseInt(s)/10;
 }
 
 function changeAngle(a) {
-  rotationAngle = a;
+  rotationAngle = parseInt(a);
+  console.log(rotationAngle);
+}
+
+function changeFOV(v) {
+  console.log("FOV:", v);
+  fov = parseInt(v);
 }

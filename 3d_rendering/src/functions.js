@@ -3,20 +3,24 @@ function slider_radius(value) {
 }
 
 function slider_rotation(axis, value) {
+  value = parseInt(value);
   if (axis == "x" || axis == "X") {
     ax = value;
+    console.log("ax:", ax);
   }
   if (axis == "y" || axis == "Y") {
     ay = value;
+    console.log("ay:", ay);
   }
   if (axis == "z" || axis == "Z") {
     az = value;
+    console.log("az:", az);
   }
 }
 
 function slider_rotationSpeed(value) {
+  a_update = parseInt(value)/100;
   console.log("a_update: " + a_update);
-  a_update = value;
 }
 
 function checkbox_autoRotate(checkbox) {
@@ -35,8 +39,8 @@ function checkbox_autoRotate(checkbox) {
     a_update = 0;
 
     // set angle to values of sliders
-    ax = document.getElementById("rotateX").value;
-    ay = document.getElementById("rotateY").value;;
-    az = document.getElementById("rotateZ").value;;
+    ax = parseInt(document.getElementById("rotateX").value);
+    ay = parseInt(document.getElementById("rotateY").value);
+    az = parseInt(document.getElementById("rotateZ").value);
   }
 }

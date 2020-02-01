@@ -1,70 +1,77 @@
-import Sketch from "../utilities.js";
-import {random, Vector2, Vector3, map} from "../utilities.js";
+//import * as utilities from "../utilities.js";
+import Calculations, {Sketch, random, Vector2, Vector3} from "../utilities.js";
+import Sphere from "./sphere.js";
+
 
 // console.log(random.randint(0, 100));
 
 var s = new Sketch("gameCanvas");
 s.canvas.setMode("CENTER");
 
-let a = new Vector3(1, 0, 0);
-let b = new Vector3(0, 1, 0);
-//Vector3.cross(a, b).log();
+var color = "red";
 
-var v = new Vector2(100, 100);
-// v.log();
-// console.log(v.heading_deg());
 
-let u = random.randint(0, 359);
-console.log("u:", u);
-let x = map(u, 0, 359, 0, 100);
-console.log(x);
+// var sphere = []; // sphere[lat][lon]
 
-var cube = [new Vector3(-10, -10, -10),
-  new Vector3(-10, 10, -10),
-  new Vector3(10, 10, -10),
-  new Vector3(10, -10, -10),
+const r = 150; // radius of sphere
+const total = 20; // number of points per row/column
+var sphere = new Sphere(r, total);
 
-  new Vector3(-10, -10, 10),
-  new Vector3(-10, 10, 10),
-  new Vector3(10, 10, 10),
-  new Vector3(10, -10, 10)];
-
-cube[0].log();
-let r = cube[0].rotate(90, "x");
-r.log();
-r = r.project(100);
-r.log();
+// // create points on sphere and add them to the sphere array
+// for (var i = 0; i < total+1; i++) {
+//   const lat = Calculations.map(i, 0, total, -(Math.PI/2), Math.PI/2);
+//   var column = [];
+//   for (var j = 0; j < total+1; j++) {
+//     const lon = Calculations.map(j, 0, total, -Math.PI, Math.PI);
+//     column.push(Calculations.polar_coordinates_3d(r, lon, lat));
+//   }
+//   sphere.push(column);
+// }
 
 s.draw(function () {
   s.canvas.clear();
 
-  // for (var i = 0; i < 360; i++) {
-    //   let r = v.rotate(i);
-    //   s.canvas.drawPoint(r.x, r.y, 2, "red");
-    // }
-    // let p = v.rotate(angle);
-    // s.canvas.drawPoint(p.x, p.y, 3, "yellow")
-    // s.canvas.drawPoint(v.x, v.y, 3, "green");
+  // for (var lat = 0; lat<sphere.length-1; lat++) {
+  //   for (var lon = 0; lon<sphere[lat].length-1; lon++) {
+  //
+  //     if (lat%2 == 0) {
+  //       color = "white";
+  //     } else {
+  //       color = "blue";
+  //     }
+  //
+  //     // projecting and rotating the points into 2d
+  //     let p1 = sphere[lat][lon];
+  //     let v1 = p1.rotate(rotationAngle, "x").rotate(rotationAngle, "y").project(); // vertex 1
+  //
+  //     let p2 = sphere[lat+1][lon];
+  //     let v2 = p2.rotate(rotationAngle, "x").rotate(rotationAngle, "y").project(); // vertex 2
+  //
+  //     let p3 = sphere[lat][lon+1];
+  //     let v3 = p3.rotate(rotationAngle, "x").rotate(rotationAngle, "y").project(); // vertex 3
+  //
+  //     let p4 = sphere[lat+1][lon+1];
+  //     let v4 = p4.rotate(rotationAngle, "x").rotate(rotationAngle, "y").project(); // vertex 4
+  //
+  //     // drawing the points
+  //     // connecting the points
+  //     // s.canvas.drawPoint(v1.x, v1.y, 2, color);
+  //     // s.canvas.drawPoint(v2.x, v2.y, 2, color);
+  //     // s.canvas.drawPoint(v3.x, v3.y, 2, color);
+  //
+  //     // s.canvas.drawLine(v1.x, v1.y, v2.x, v2.y, color);
+  //     // s.canvas.drawLine(v1.x, v1.y, v3.x, v3.y, color);
+  //     // s.canvas.drawLine(v2.x, v2.y, v3.x, v3.y, color);
+  //
+  //     s.canvas.drawTriangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, color);
+  //     s.canvas.drawTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y, color);
+  //   }
+  // }
 
-    let projected = [];
-    for (var p of cube) {
-      let f = Vector3.mult_scalar(p, 0.3);
-      let r = f.rotate(rotationAngle, "x").rotate(rotationAngle, "y").project();
-      r = Vector3.mult_scalar(r, 40);
-      projected.push(r);
-    }
+  sphere.iterate(rotationAngle, s.canvas);
 
-    for (var p of projected) {
-      s.canvas.drawPoint(p.x, p.y, 2);
-    }
+  rotationAngle += rotationSpeed;
 
-    for (var i = 0; i < 4; i++) {
-      s.canvas.drawLine(projected[i].x, projected[i].y, projected[(i+1) % 4].x, projected[(i+1) % 4].y);
-      s.canvas.drawLine(projected[i+4].x, projected[i+4].y, projected[((i+1) % 4)+4].x, projected[((i+1) % 4)+4].y);
-      s.canvas.drawLine(projected[i].x, projected[i].y, projected[i+4].x, projected[i+4].y);
-    }
-
-    rotationAngle+=rotationSpeed;
   });
 
 window.addEventListener('load', function () {

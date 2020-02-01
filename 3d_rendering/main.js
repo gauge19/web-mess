@@ -1,14 +1,8 @@
-const GAME_SPEED = 30;
-const CANVAS_BACKGROUND_COLOR = "black";
-const CANVAS_BORDER_COLOR = "grey";
+import Calculations from "../utilities.js";
+import {Sketch, random, Vector2, Vector3} from "../utilities.js";
 
-const gameCanvas = document.getElementById("gameCanvas");
-const ctx = gameCanvas.getContext("2d");
-
-// ctx.translate(300, 200);
-
-var running = true;
-main();
+var s = new Sketch("gameCanvas");
+s.canvas.setMode("CENTER"); // draw relative to center
 
 document.addEventListener("keydown", event_keypress);
 
@@ -23,81 +17,42 @@ var a_change = 0.0314; // change per frame (~1% of full rotation which is Pi or 
 var a_update = 0; // used for auto rotation;
 */
 
-var translation = [gameCanvas.width/2, gameCanvas.height/2]; // used to shift items to center
+var cube = [new Vector3(-10, -10, -10),
+  new Vector3(-10, 10, -10),
+  new Vector3(10, 10, -10),
+  new Vector3(10, -10, -10),
 
-// points to form cube
-var points = [new Vertex(-10, -10, -10),
-              new Vertex(-10, 10, -10),
-              new Vertex(10, 10, -10),
-              new Vertex(10, -10, -10),
+  new Vector3(-10, -10, 10),
+  new Vector3(-10, 10, 10),
+  new Vector3(10, 10, 10),
+  new Vector3(10, -10, 10)];
 
-              new Vertex(-10, -10, 10),
-              new Vertex(-10, 10, 10),
-              new Vertex(10, 10, 10),
-              new Vertex(10, -10, 10)];
+s.draw(function () {
+  s.canvas.clear();
 
-// draws circle at the coordinates of the Vertex p
-function drawPoint(p) {
-  ctx.beginPath();
-  ctx.fillStyle = p.color;
-  ctx.arc(p.x*cube_scale+translation[0], p.y*cube_scale+translation[1], r, 0, 2*Math.PI);
-  ctx.fill();
-  //ctx.endPath();
-}
+  let projected = [];
+  for (var p of cube) {
+    let f = Vector3.mult_scalar(p, cube_scale);
+    let point = f.rotate(ax, "x").rotate(ay, "y").rotate(az, "z").project(45);
+    projected.push(point);
+  }
 
-// draws a line between two points
-function drawLine(p1, p2) {
-  ctx.beginPath();
-  ctx.strokeStyle = p1.color;
-  ctx.moveTo(p1.x*cube_scale+translation[0], p1.y*cube_scale+translation[1]);
-  ctx.lineTo(p2.x*cube_scale+translation[0], p2.y*cube_scale+translation[1]);
-  ctx.stroke();
-}
+  for (var p of projected) {
+    s.canvas.drawPoint(p.x, p.y, r, "white");
+  }
 
-function main() {
-  setTimeout(function onTick() {
-    clearCanvas();
+  for (var i = 0; i < 4; i++) {
+    s.canvas.drawLine(projected[i].x, projected[i].y, projected[(i+1) % 4].x, projected[(i+1) % 4].y, "white");
+    s.canvas.drawLine(projected[i+4].x, projected[i+4].y, projected[((i+1) % 4)+4].x, projected[((i+1) % 4)+4].y, "white");
+    s.canvas.drawLine(projected[i].x, projected[i].y, projected[i+4].x, projected[i+4].y, "white");
+  }
 
-    // calculate points
-    var projected_arr = []; // all the newly calculated vertices
-    var index = 0;
-    for (point of points) {
-      projected_arr[index] = point.rotate(ax, "x").rotate(ay, "y").rotate(az, "z").project(200);
+  // increase angle every frame to make it rotate automatically, handled by sliders
+  ax += a_update;
+  ay += a_update;
+  az += a_update;
 
-      index++;
-    }
-
-    // draw the projected points
-    for (p of projected_arr) {
-      drawPoint(p);
-    }
-
-    // connecting points
-    for (var i = 0; i < 4; i++) {
-      drawLine(projected_arr[i], projected_arr[(i+1) % 4]);
-      drawLine(projected_arr[i+4], projected_arr[((i+1) % 4)+4]);
-      drawLine(projected_arr[i], projected_arr[i+4]);
-    }
-
-    // increase angle every frame to make it rotate automatically, handled by sliders
-    ax += a_update;
-    ay += a_update;
-    az += a_update;
-
-    main();
-  }, GAME_SPEED)
-}
-
-function clearCanvas() {
-  //  Select the colour to fill the drawing
-  ctx.fillStyle = CANVAS_BACKGROUND_COLOR;
-  //  Select the colour for the border of the canvas
-  ctx.strokestyle = CANVAS_BORDER_COLOR;
-  // Draw a "filled" rectangle to cover the entire canvas
-  ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-  // Draw a "border" around the entire canvas
-  ctx.strokeRect(0, 0, gameCanvas.width, gameCanvas.height);
-}
+})
 
 function event_keypress(event) {
 
