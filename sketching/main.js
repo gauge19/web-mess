@@ -1,5 +1,4 @@
-//import * as utilities from "../utilities.js";
-import Calculations, {Sketch, random, Vector2, Vector3} from "../utilities.js";
+import {Sketch, random, Calculations, test} from "../utils/utils.js";
 import Sphere from "./sphere.js";
 
 
@@ -9,7 +8,6 @@ var s = new Sketch("gameCanvas");
 s.canvas.setMode("CENTER");
 
 var color = "red";
-
 
 // var sphere = []; // sphere[lat][lon]
 

@@ -1,5 +1,4 @@
-import Calculations from "../utilities.js";
-import {Sketch, random, Vector2, Vector3} from "../utilities.js";
+import {Sketch, random, Vector2, Vector3, Calculations} from "../utils/utils.js";
 
 var s = new Sketch("gameCanvas");
 s.canvas.setMode("CENTER"); // draw relative to center
@@ -9,17 +8,6 @@ document.addEventListener("mousedown", event_mousedown);
 
 var clicked_left = false;
 var clicked_right = false;
-
-// defined in index.html to be used with sliders
-/*
-var r = 4; // radius of cirle used to represent points
-var cube_scale = 10; // determins scale of cube
-var ax = Math.PI/10; // angle of rotation along x axis
-var ay = Math.PI/10; // angle of rotation along y axis
-var az = Math.PI/10; // angle of rotation along z axis
-var a_change = 0.0314; // change per frame (~1% of full rotation which is Pi or 3.14)
-var a_update = 0; // used for auto rotation;
-*/
 
 var cube = [new Vector3(-10, -10, -10),
   new Vector3(-10, 10, -10),

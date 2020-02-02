@@ -1,4 +1,4 @@
-import Calculations, {random, Vector2, Vector3} from "../utilities.js";
+import {Calculations, random, Vector2, Vector3} from "../utils/utils.js";
 
 export default class Sphere {
   constructor(r, total) {
