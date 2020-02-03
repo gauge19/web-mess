@@ -1,29 +1,29 @@
-import {Sketch, random, Calculations, Noise} from "../utils/utils.js";
+import {Sketch, random, Calculations, Noise, Vector2} from "../utils/utils.js";
+import {noise1d, noise2d} from "./examples.js";
 
 var s = new Sketch("gameCanvas");
 //s.canvas.setMode("CENTER");
 
 var noise = new Noise();
 
+s.canvas.canvas.width = 300;
+s.canvas.canvas.height = 300;
 var ctx = s.canvas.context;
-var image = ctx.createImageData(s.canvas.width, s.canvas.height);
-var data = image.data;
 
+var yoff = 0;
+
+var points = noise2d(s);
+console.log(points.length);
+s.canvas.background = "black";
+s.GAMESPEED = 1;
 
 s.draw(function () {
-  for (var x = 0; x < s.canvas.width; x++) {
-    for (var y = 0; y < s.canvas.height; y++) {
-      var value = Math.abs(noise.perlin2(x / 100, y / 100));
-      value *= 256;
+  s.canvas.clear();
 
-      var cell = (x + y * s.canvas.width) * 4;
-      data[cell] = data[cell + 1] = data[cell + 2] = value;
-      data[cell] += Math.max(0, (25 - value) * 8);
-      data[cell + 3] = 255; // alpha.
-    }
+  // yoff = noise1d(s, yoff);
+  for (var point of points) {
+    let c = point.color;
+    s.canvas.drawPoint(point.x, point.y, 1, "rgba("+c+", "+c+", "+c+")");
   }
 
-  ctx.fillColor = 'black';
-  ctx.fillRect(0, 0, 100, 100);
-  ctx.putImageData(image, 0, 0);
-})
+});

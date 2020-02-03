@@ -116,6 +116,47 @@ export class Canvas {
     }
   }
 
+  drawShape(verteces=[], drawmode="STROKE", color="red") {
+    let ctx = this.context;
+    ctx.beginPath();
+
+    for (var i = 0; i < verteces.length; i++) {
+      let x = verteces[i].x;
+      let y = verteces[i].y;
+
+      if (this.mode == "CENTER") {
+        x = this.width/2 + x;
+        y = this.height/2 + y;
+      }
+
+      if (i == 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    }
+
+    // close polygon by conneting last with first point
+    let x = verteces[0].x;
+    let y = verteces[0].y;
+
+    if (this.mode == "CENTER") {
+      x = this.width/2 + x;
+      y = this.height/2 + y;
+    }
+
+    ctx.lineTo(x, y);
+
+    // draw the polygon
+    if (drawmode == "STROKE") {
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    } else if (drawmode == "FILL") {
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+  }
+
   setMode(m) {
     if (m == "CENTER") {
       this.mode = m;
@@ -132,6 +173,7 @@ export class Sketch {
   }
 
   draw(loop) {
+    //console.log("gamespeed:", this.GAMESPEED);
     var t = this;
     setTimeout(function onTick() {
       loop();

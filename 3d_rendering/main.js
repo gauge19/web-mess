@@ -102,10 +102,10 @@ function event_mousedown(event) {
   // console.log(x, y);
   const click_strength = 50;
 
-  if (x > 0 && x < s.canvas.width/2) {
+  if (x > 0 && x < s.canvas.width/2 && y > 0 && y < s.canvas.height) {
     clicked_left = true;
     ay_update = a_change*click_strength;
-  } else if (x > s.canvas.width/2 && x < s.canvas.width) {
+  } else if (x > s.canvas.width/2 && x < s.canvas.width && y > 0 && y < s.canvas.height) {
     clicked_right = true;
     ay_update = -a_change*click_strength;
   }
