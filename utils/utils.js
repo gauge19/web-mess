@@ -182,8 +182,8 @@ export class Sketch {
   }
 }
 
-import {Vector2, Vector3} from "./vector.js";
-export {Vector2, Vector3};
+import {Vector2, Vector3, Vector} from "./vector.js";
+export {Vector2, Vector3, Vector};
 
 import random from "./random.js";
 export {random};
