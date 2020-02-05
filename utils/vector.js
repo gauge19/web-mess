@@ -46,6 +46,14 @@ export class Vector2 {
   }
 
   /**
+   * Returns a new Vector2 object with the same x, y and z values as this.
+   * @returns {Vector2} New Vector2 object
+   */
+  copy() {
+    return new Vector2(this.x, this.y);
+  }
+
+  /**
    * Limits x and y value to v. Possibly doesn't work.
    * @param {number} v Maximum (and negative minimum) value
    */
@@ -311,6 +319,16 @@ export class Vector2 {
   }
 
   /**
+   * Calculates dot product of two vectors.
+   * @param {Vector2} v1 Vector2 object
+   * @param {Vector2} v2 Vector2 object
+   * @returns {number} Dot product of v1 and v2.
+   */
+  static dot(v1, v2) {
+    return v1.x*v2.x+v1.y*v2.y;
+  }
+
+  /**
    * Calculates cross product of two vectors.
    * @param {Vector2} v1 Vector2 object
    * @param {Vector2} v2 Vector2 object
@@ -318,6 +336,17 @@ export class Vector2 {
    */
   static cross(v1, v2) {
     return v1.x*v2.y-v1.y*v2.x;
+  }
+
+  /**
+   * Calculates angle between two vectors.
+   * @param {Vector2} v1 Vector2 object
+   * @param {Vector2} v2 Vector2 object
+   * @returns {number} Angle theta between v1 and v2 in degrees.
+   */
+  static angle(v1, v2) {
+    let theta = Math.acos(Vector2.dot(v1, v2) / (v1.mag * v2.mag));
+    return Calculations.rad_to_deg(theta);
   }
 }
 
@@ -367,6 +396,14 @@ export class Vector3 {
    */
   toString() {
     return "x: " + this.x + ", y: " + this.y + ", z: " + this.z;
+  }
+
+  /**
+   * Returns a new Vector3 object with the same x, y and z values as this.
+   * @returns {Vector3} New Vector3 object
+   */
+  copy() {
+    return new Vector3(this.x, this.y, this.z);
   }
 
   /**
@@ -679,6 +716,16 @@ export class Vector3 {
   }
 
   /**
+   * Calculates dot product of two vectors.
+   * @param {Vector2} v1 Vector2 object
+   * @param {Vector2} v2 Vector2 object
+   * @returns {number} Dot product of v1 and v2.
+   */
+  static dot(v1, v2) {
+    return v1.x*v2.x+v1.y*v2.y+v1.z*v2.z;
+  }
+
+  /**
    * Calculates cross product of two vectors.
    * @param {Vector3} v1 Vector3 object
    * @param {Vector3} v2 Vector3 object
@@ -691,5 +738,16 @@ export class Vector3 {
     let y = v1a[1]*v2a[2]-v1a[2]*v2a[1];
     let z = v1a[2]*v2a[3]-v1a[3]*v2a[2];
     return new Vector3(x, y, z);
+  }
+
+  /**
+   * Calculates angle between two vectors.
+   * @param {Vector2} v1 Vector2 object
+   * @param {Vector2} v2 Vector2 object
+   * @returns {number} Angle theta between v1 and v2 in degrees.
+   */
+  static angle(v1, v2) {
+    let theta = Math.acos(Vector3.dot(v1, v2) / (v1.mag * v2.mag));
+    return Calculations.rad_to_deg(theta);
   }
 }
