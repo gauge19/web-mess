@@ -1,4 +1,4 @@
-import {Sketch, random, Calculations, test} from "../utils/utils.js";
+import {Sketch, random, Calculations, test, Vector2} from "../utils/utils.js";
 import Sphere from "./sphere.js";
 
 
@@ -10,6 +10,13 @@ s.canvas.setMode("CENTER");
 var color = "red";
 
 // var sphere = []; // sphere[lat][lon]
+
+let v1 = new Vector2(4, 3);
+let v2 = new Vector2(3, 5);
+console.log("dot", Vector2.dot(v1, v2));
+let angle = Vector2.angle(v1, v2);
+console.log("angle", angle);
+// console.log("deg", Calculations.rad_to_deg(angle));
 
 const r = 150; // radius of sphere
 const total = 20; // number of points per row/column
