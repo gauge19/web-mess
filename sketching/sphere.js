@@ -54,7 +54,7 @@ export default class Sphere {
       canvas.drawPoint(p2.x, p2.y, 2, color);
       canvas.drawPoint(p3.x, p3.y, 2, color);
 
-      canvas.drawTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, "FILL", colors[1]);
+      //canvas.drawTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, "FILL", colors[1]);
     }
   }
 }

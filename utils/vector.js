@@ -765,6 +765,7 @@ export class Vector {
   constructor(x=0, y=0, z) {
     this.x = x;
     this.y = y;
+    this.z;
 
     if (z) {
       this.z = z;
@@ -777,14 +778,19 @@ export class Vector {
    */
   get mag() {
     if (this.z) {
-      return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+      return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
     } else {
-      return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+      return Math.sqrt(this.x*this.x + this.y*this.y);
     }
   }
   set mag(len) {
     if (this.z) {
-      throw TypeError("Setting magnitude for three dimensional vectors not yet supported");
+      //throw TypeError("Setting magnitude for three dimensional vectors not yet supported");
+      let n = this.normalize();
+      n.mult(len);
+      this.x = n.x;
+      this.y = n.y;
+      this.z = n.z;
     } else {
       let h = this.heading(); // angle of direction
       this.x = len*Math.cos(h);
@@ -795,11 +801,31 @@ export class Vector {
   /* General methods */
 
   /**
+   * Returns a new Vector object with random coordinates within the given width and height and optionally depth range.
+   * @param {number} maxX Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} maxY Optional. Maximum y coordinate the vector should have. gameCanvas.width is default.
+   * @param {number} maxZ Optional. Maximum z coordinate the vector should have. 0 is default.
+   * @returns {Vector} Vector object
+   */
+  static random(maxX, maxY, maxZ) {
+    if (!maxX) {
+      maxX = gameCanvas.width;
+    }
+    if (!maxY) {
+      maxY = gameCanvas.height;
+    }
+    if (!maxZ) {
+      return new Vector(random.random(maxX), random.random(maxY));
+    }
+    return new Vector(random.random(maxX), random.random(maxY), random.random(maxZ));
+  }
+
+  /**
    * Logs positional values as well as magnitude and heading angle to the console.
    */
   log() {
     if (this.z) {
-      console.log("Vector x: " + this.x + ", y: " + this.y + ", z:" + this.z + ", mag: " + this.mag + ", heading: " + this.heading());
+      console.log("Vector x: " + this.x + ", y: " + this.y + ", z:" + this.z + ", mag: " + this.mag);
     } else {
       console.log("Vector x: " + this.x + ", y: " + this.y + ", mag: " + this.mag + ", heading: " + this.heading());
     }
@@ -834,15 +860,11 @@ export class Vector {
    * @returns {Vector} normalized Vector object
    */
   normalize() {
-    if (this.z) {
-      throw Error("Normalize not yet supported for 3 dimensional vectors.")
+    let mag = this.mag;
+    if (mag > 0) {
+      return Vector.div(this, mag);
     } else {
-      let mag = this.mag;
-      if (mag != 0) {
-        return this.mult((1/mag));
-      } else {
-        return this.mult(1); // copy of this
-      }
+      return this.copy(); // copy of this
     }
   }
 
@@ -860,7 +882,7 @@ export class Vector {
    */
   heading_rad() {
     if (this.z) {
-      throw Error("Heading not yet supported for 3 dimensional vectors.");
+      throw Error("Heading doesn't apply to 3d vectors as there are atleast 2 angles and one linear coordinate.");
     } else {
       return Math.atan(this.y/this.x);
     }
@@ -869,18 +891,21 @@ export class Vector {
   /* Transform methods */
 
   /**
-   * Rotates this vector around a given axis by a given angle theta.
+   * Rotates this vector by a given angle theta around a given axis (only 3d).
    * @param {number} theta Angle to be rotated in degrees
-   * @param {number} axis Axis to be rotated around. X axis is default.
-   * @returns {Vector3} rotated Vector3 object
+   * @param {string} axis Axis to be rotated around. X axis is default. Can be omitted for 2d vectors.
+   * @returns {Vector} rotated Vector object
    */
   rotate(theta, axis="x") {
     // "force" angle onto circle (370° --> 10° because it's 30 above 360)
-    const theta = Calculations.deg_to_rad(theta%360); // convert angle to radiants
+    theta = Calculations.deg_to_rad(theta%360); // convert angle to radiants
 
     if (this.z) {
       var rotation;
 
+      /* Rotate all the points along the specified axis by using that axis' rotation matrix. */
+
+      // 3d rotation matrices
       if (axis == "x" || axis == "X") {
         let rotationX = [[1, 0, 0],
         [0, Math.cos(theta), -Math.sin(theta)],
@@ -908,7 +933,7 @@ export class Vector {
     } else {
       // 2d rotation matrix
       const matrix = [[Math.cos(theta), Math.sin(theta)],
-                    [-Math.sin(theta), Math.cos(theta)]];
+                      [-Math.sin(theta), Math.cos(theta)]];
 
       // matrix multiplication with rotation matrix and current vector to rotate it
       let x = matrix[0][0] * this.x + matrix[0][1] * this.y;
@@ -924,29 +949,35 @@ export class Vector {
    *
    * Based on Quinn Fowler's answer on StackOverflow:
    https://stackoverflow.com/questions/724219/how-to-convert-a-3d-point-into-2d-perspective-projection
-   * @param {number} fov Field of view in degrees. 45° is default.
    * @param {number} screenW Width of the canvas in pixels. 600px is default.
    * @param {number} screenH Width of the canvas in pixels. 400px is default.
-   * @returns {Vector2} Vector2 object
+   * @returns {Vector} Vector object
    */
-  project(fov=45, screenW=600, screenH=400) {
+  project(screenW=600, screenH=400) {
 
-    // option 2: stackoverflow --> works fucking amazing
-    const hw = screenW/2;
-    const hh = screenH/2;
-    const fl_top = hw / Math.tan(fov/2); // focal length top
-    const fl_side = hh / Math.tan(fov/2); // focal length top
+    const fov = 45;
 
-    const d = (fl_top + fl_side) / 2;
+    if (this.z) {
+      // option 2: stackoverflow --> works fucking amazing
+      const hw = screenW/2;
+      const hh = screenH/2;
+      const fl_top = hw / Math.tan(fov/2); // focal length top
+      const fl_side = hh / Math.tan(fov/2); // focal length top
 
-    const x = (this.x*d) / (this.z+d);
-    const y = (this.y*d) / (this.z+d);
+      const d = (fl_top + fl_side) / 2;
 
-    return new Vector2(x, y); // create new Vector2 with calculated coordinates
+      const x = (this.x*d) / (this.z+d);
+      const y = (this.y*d) / (this.z+d);
+
+      return new Vector(x, y); // create new Vector2 with calculated coordinates
+    } else {
+      throw Error("Vector.project() only applies to 3d vectors.");
+    }
   }
 
   /* Mathematical operations in place */
 
+  /* Basic operations */
   /**
    * Adds a vector or scalar to this vector in place.
    * @param {(Vector|number)} v Vector or scalar object to be added
@@ -1035,6 +1066,7 @@ export class Vector {
     }
   }
 
+  /* Advanced operations */
   /**
    * Calculates dot product of this vector with another vector.
    * @param {Vector} v Vector object
@@ -1054,7 +1086,7 @@ export class Vector {
    * @returns {Vector} Cross product of the two vectors.
    */
   cross(v) {
-    if (this.z) {
+    if (this.z && v.z) {
       let v1a = [this.y, this.z, this.x, this.y];
       let v2a = [v.y, v.z, v.x, v.y];
       let x = v1a[0]*v2a[1]-v1a[1]*v2a[0];
@@ -1063,9 +1095,44 @@ export class Vector {
       return new Vector3(x, y, z);
     } else {
       // return v1.x*v2.y-v1.y*v2.x; // not really the crossproduct
-      throw Error("There is no crossproduct of 2d vectors")
+      throw Error("Both vectors must be 3 dimensional because there is no crossproduct of 2d vectors")
     }
 
+  }
+
+  /**
+  * Calculates the squared distance between this vector and another vector.
+  Use for comparing two distances and finding the shorter one.
+  d1>d2 --> d1^2>d2^2
+  Much faster than calculating euclidean distance (Vector.dist()) many times.
+  * @param {Vector} v Vector object
+  * @returns {number} Squared distance
+  */
+  dist2(v) {
+    const dx = Math.abs(v.x - this.x);
+    const dy = Math.abs(v.y - this.y);
+    const dz = Math.abs(v.z - this.z);
+
+    return Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2); // distance squared
+  }
+
+  /**
+  * Calculates the euclidean distance between this vector and another vector.
+  * @param {Vector} v Vector object
+  * @returns {number} Euclidean distance
+  */
+  dist(v) {
+    return Math.sqrt(this.dist2(v));
+  }
+
+  /**
+   * Calculates the angle between this vector and another vector in degrees.
+   * @param {Vector} v Vector object
+   * @returns {number} Angle theta in degrees.
+   */
+  angle(v) {
+    let theta = Math.acos(this.dot(v) / (this.mag * v.mag));
+    return Calculations.rad_to_deg(theta);
   }
 
   /* Static mathematical operations */
@@ -1078,21 +1145,8 @@ export class Vector {
    */
   static add(v1, v2) {
     v1 = v1.copy();
-    if (v2 instanceof Vector) {
-      v1.x += v2.x;
-      v1.y += v2.y;
 
-      if (v1.z && v2.z) {
-        v1.z += v2.z;
-      }
-    } else if (typeof v2 == "number") {
-      v1.x += v2;
-      v1.y += v2;
-
-      if (v1.z) {
-        v1.z += v2;
-      }
-    }
+    v1.add(v2);
 
     return v1;
   }
@@ -1105,21 +1159,8 @@ export class Vector {
    */
   static sub(v1, v2) {
     v1 = v1.copy();
-    if (v2 instanceof Vector) {
-      v1.x -= v2.x;
-      v1.y -= v2.y;
 
-      if (v1.z && v2.z) {
-        v1.z-= v2.z;
-      }
-    } else if (typeof v2 == "number") {
-      v1.x -= v2;
-      v1.y -= v2;
-
-      if (v1.z) {
-        v1.z -= v2;
-      }
-    }
+    v1.sub(v2);
 
     return v1;
   }
@@ -1132,21 +1173,8 @@ export class Vector {
    */
   static mult(v1, v2) {
     v1 = v1.copy();
-    if (v2 instanceof Vector) {
-      v1.x *= v2.x;
-      v1.y *= v2.y;
 
-      if (v1.z && v2.z) {
-        v1.z *= v2.z;
-      }
-    } else if (typeof v2 == "number") {
-      v1.x *= v2;
-      v1.y *= v2;
-
-      if (v1.z) {
-        v1.z *= v2;
-      }
-    }
+    v1.mult(v2);
 
     return v1;
   }
@@ -1159,21 +1187,8 @@ export class Vector {
    */
   static div(v1, v2) {
     v1 = v1.copy();
-    if (v2 instanceof Vector) {
-      v1.x /= v2.x;
-      v1.y /= v2.y;
 
-      if (v1.z && v2.z) {
-        v1.z /= v2.z;
-      }
-    } else if (typeof v2 == "number") {
-      v1.x /= v2;
-      v1.y /= v2;
-
-      if (v1.z) {
-        v1.z /= v2;
-      }
-    }
+    v1.div(v2);
 
     return v1;
   }
@@ -1185,11 +1200,9 @@ export class Vector {
    * @returns {number} Dot product of the two vectors.
    */
   static dot(v1, v2) {
-    if (this.z) {
-      return v1.x*v2.x+v1.y*v2.y+v1.z*v2.z;
-    } else {
-      return v1.x*v2.x+v1.y*v2.y;
-    }
+    v1 = v1.copy();
+
+    return v1.dot(v2);
   }
 
   /**
@@ -1199,17 +1212,45 @@ export class Vector {
    * @returns {Vector} Cross product of the two vectors.
    */
   static cross(v1, v2) {
-    if (this.z) {
-      let v1a = [v1.y, v1.z, v1.x, v1.y];
-      let v2a = [v2.y, v2.z, v2.x, v2.y];
-      let x = v1a[0]*v2a[1]-v1a[1]*v2a[0];
-      let y = v1a[1]*v2a[2]-v1a[2]*v2a[1];
-      let z = v1a[2]*v2a[3]-v1a[3]*v2a[2];
-      return new Vector3(x, y, z);
-    } else {
-      // return v1.x*v2.y-v1.y*v2.x; // not really the crossproduct
-      throw Error("There is no crossproduct of 2d vectors")
-    }
+    v1 = v1.copy();
 
+    return v1.cross(v2);
+  }
+
+  /**
+  * Calculates the squared distance between two vectors.
+  Use for comparing two distances and finding the shorter one.
+  d1>d2 --> d1^2>d2^2
+  Much faster than calculating euclidean distance (Vector3.dist()) many times.
+  * @param {Vector3} v1 Vector3 object
+  * @param {Vector3} v2 Vector3 object
+  * @returns {number} Squared distance between v1 and v2.
+  */
+  static dist2(v1, v2) {
+    return v1.dist2(v2);
+  }
+
+  /**
+  * Calculates the euclidean distance between two vectors.
+  * @param {Vector3} v1 Vector3 object
+  * @param {Vector3} v2 Vector3 object
+  * @returns {number} Euclidean distance between v1 and v2.
+  */
+  static dist(v1, v2) {
+    return Math.sqrt(v1.dist2(v2));
+  }
+
+  /**
+   * Calculates angle between two vectors.
+   * @param {Vector2} v1 Vector2 object
+   * @param {Vector2} v2 Vector2 object
+   * @returns {number} Angle theta between v1 and v2 in degrees.
+   */
+  static angle(v1, v2) {
+    // let theta = Math.acos(Vector2.dot(v1, v2) / (v1.mag * v2.mag));
+    // return Calculations.rad_to_deg(theta);
+
+    v1 = v1.copy();
+    return v1.angle(v2);
   }
 }
