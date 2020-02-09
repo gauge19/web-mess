@@ -1,4 +1,4 @@
-import Calculations from "./calc.js";
+import {random, Calculations, Canvas} from "../utils/utils.js";
 
 /** @class Creates a 2D Vector object. */
 export class Vector2 {
@@ -840,6 +840,16 @@ export class Vector {
   }
 
   /**
+   * @param {Canvas} canvas
+   * @param {Vector} start
+   */
+  draw(canvas, start=new Vector(0, 0)) {
+    let v = Vector.add(this, start);
+    canvas.drawLine(start.x, start.y, v.x, v.y, "blue", 4);
+    canvas.drawPoint(v.x, v.y, 5, "blue");
+  }
+
+  /**
    * Returns a new Vector object with the same positional values as this.
    * @returns {Vector} New Vector object
    */
@@ -1094,8 +1104,12 @@ export class Vector {
       let z = v1a[2]*v2a[3]-v1a[3]*v2a[2];
       return new Vector3(x, y, z);
     } else {
-      // return v1.x*v2.y-v1.y*v2.x; // not really the crossproduct
-      throw Error("Both vectors must be 3 dimensional because there is no crossproduct of 2d vectors")
+      let v1a = [this.y, 0, this.x, this.y];
+      let v2a = [v.y, 0, v.x, v.y];
+      let x = v1a[0]*v2a[1]-v1a[1]*v2a[0];
+      let y = v1a[1]*v2a[2]-v1a[2]*v2a[1];
+      let z = v1a[2]*v2a[3]-v1a[3]*v2a[2];
+      return new Vector3(x, y, z);
     }
 
   }
