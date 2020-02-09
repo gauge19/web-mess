@@ -7,6 +7,15 @@ canvas.clear();
 
 document.addEventListener("mousemove", event_mousemove);
 
+function event_mousemove(event) {
+  const r = canvas.canvas.getBoundingClientRect();
+  const x = event.clientX - r.left;
+  const y = event.clientY - r.top;
+
+  document.getElementById("demo").innerHTML = "x: " + x + " y: " + y;
+  //console.log("x: " + x + " y: " + y);
+}
+
 /**
  * @param {Vector} home
  * @param {Vector} p1
@@ -18,15 +27,6 @@ function direction(home, p1, p2) {
   let b = Vector.sub(p2, home);
   let cross = a.cross(b);
   return cross.z;
-}
-
-function event_mousemove(event) {
-  const r = canvas.canvas.getBoundingClientRect();
-  const x = event.clientX - r.left;
-  const y = event.clientY - r.top;
-
-  document.getElementById("demo").innerHTML = "x: " + x + " y: " + y;
-  //console.log("x: " + x + " y: " + y);
 }
 
 /**

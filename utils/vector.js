@@ -792,9 +792,13 @@ export class Vector {
       this.y = n.y;
       this.z = n.z;
     } else {
-      let h = this.heading(); // angle of direction
-      this.x = len*Math.cos(h);
-      this.y = len*Math.sin(h);
+      // let h = this.heading(); // angle of direction
+      // this.x = len*Math.cos(h);
+      // this.y = len*Math.sin(h);
+      let n = this.normalize();
+      n.mult(len);
+      this.x = n.x;
+      this.y = n.y;
     }
   }
 
@@ -861,8 +865,24 @@ export class Vector {
     }
   }
 
-  limit() {
+  limit(v) {
+    if (this.x > v) {
+      this.x = v;
+    } else if (this.x < -v) {
+      this.x = -v;
+    } else if (this.y > v) {
+      this.y = v;
+    } else if (this.y < -v) {
+      this.y = -v;
+    }
 
+    if (this.z) {
+      if (this.z > v) {
+        this.z = v;
+      } else if (this.z < -v) {
+        this.z = -v;
+      }
+    }
   }
 
   /**
