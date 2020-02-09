@@ -28,7 +28,7 @@ export default class random {
    * @param {Array} array - Array to pick from
    */
   static choice(array) {
-    return array[this.randint(0, array.length)];
+    return array[this.randint(0, array.length-1)];
   }
 
   /**

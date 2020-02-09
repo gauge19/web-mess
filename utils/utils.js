@@ -61,10 +61,11 @@ export class Canvas {
    * @param {number} y2 Y coordinate of point B
    * @param {string} color Color of the line, red is default.
    */
-  drawLine(x1, y1, x2, y2, color="red") {
+  drawLine(x1, y1, x2, y2, color="red", weight=1) {
     let ctx = this.context;
 
     ctx.beginPath();
+    ctx.lineWidth = weight;
     ctx.strokeStyle = color;
 
     if (this.mode == "CENTER") {
