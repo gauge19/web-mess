@@ -54,6 +54,26 @@ export class Canvas {
     ctx.fill();
   }
 
+  /** Draws circle at the coordinates of x and y.
+   * @param {number} x X coordinate
+   * @param {number} y Y coordinate
+   * @param {number} r Radius of the circle.
+   * @param {string} color Color of the circle, red is default.
+   */
+  drawCircle(x, y, r, color="red") {
+    let ctx = this.context;
+    ctx.beginPath();
+
+    if (this.mode == "CENTER") {
+      x = this.width/2 + x;
+      y = this.height/2 + y;
+    }
+
+    ctx.arc(x, y, r, 0, 2*Math.PI);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
   /** Draws line between points A(x1, y1) and B(x2, y2).
    * @param {number} x1 X coordinate of point A
    * @param {number} y1 Y coordinate of point A

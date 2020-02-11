@@ -865,23 +865,13 @@ export class Vector {
     }
   }
 
-  limit(v) {
-    if (this.x > v) {
-      this.x = v;
-    } else if (this.x < -v) {
-      this.x = -v;
-    } else if (this.y > v) {
-      this.y = v;
-    } else if (this.y < -v) {
-      this.y = -v;
-    }
-
-    if (this.z) {
-      if (this.z > v) {
-        this.z = v;
-      } else if (this.z < -v) {
-        this.z = -v;
-      }
+  limit(max) {
+    if (this.mag > max) {
+      let n = this.normalize();
+      n.mult(max);
+      this.x = n.x;
+      this.y = n.y;
+      this.z = n.z;
     }
   }
 
@@ -1143,11 +1133,16 @@ export class Vector {
   * @returns {number} Squared distance
   */
   dist2(v) {
+
     const dx = Math.abs(v.x - this.x);
     const dy = Math.abs(v.y - this.y);
-    const dz = Math.abs(v.z - this.z);
+    if (this.z) {
+      const dz = Math.abs(v.z - this.z);
+      return dx * dx + dy * dy + dz * dz; // distance squared
+    } else {
+      return dx * dx + dy * dy;
+    }
 
-    return Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2); // distance squared
   }
 
   /**

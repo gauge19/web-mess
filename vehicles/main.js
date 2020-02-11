@@ -1,7 +1,7 @@
-import {Sketch, random, Calculations, Vector} from "../utils/utils.js";
+import {Sketch, random, Calculations, Vector, Canvas} from "../utils/utils.js";
 import Vehicle from "./vehicle.js";
 
-const count = 10;
+const count = 25;
 var vehicles = [];
 for (var i = 0; i < count; i++) {
   vehicles.push(new Vehicle());
@@ -9,7 +9,7 @@ for (var i = 0; i < count; i++) {
 
 var s = new Sketch("gameCanvas");
 // s.canvas.setMode("CENTER");
-var canvas = s.canvas
+var canvas = s.canvas;
 
 var m = new Vector(canvas.width/2, canvas.height/2);
 
@@ -26,14 +26,14 @@ function event_mousemove(event) {
   m.y = y;
 }
 
-console.log(vehicles);
+//console.log(vehicles);
 s.draw(function () {
   canvas.clear();
 
   for (var v of vehicles) {
-
-    v.seek(m);
-    v.update();
+    canvas.drawCircle(v.position.x, v.position.y, v.perception);
+    v.behavior(vehicles);
+    v.update(canvas);
     v.draw(canvas);
   }
 
