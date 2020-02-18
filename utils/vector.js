@@ -804,6 +804,30 @@ export class Vector {
 
   /* General methods */
 
+
+  /**
+   * Set new values of the vector.
+   *
+   * @param  {number|Vector} x New x value or Vector to be set to.
+   * @param  {number} y New y value
+   * @param  {number} z New z value. Optional.
+   */
+  set(x, y, z) {
+    if (x instanceof Vector) {
+      this.x = x.x;
+      this.y = x.y;
+      if (x.z) {
+        this.z = x.z;
+      }
+    } else if (typeof x == "number") {
+      this.x = x;
+      this.y = y;
+      if (z) {
+        this.z = z;
+      }
+    }
+  }
+
   /**
    * Returns a new Vector object with random coordinates within the given width and height and optionally depth range.
    * @param {number} maxX Optional. Maximum x coordinate the vector should have. gameCanvas.width is default.
@@ -904,7 +928,7 @@ export class Vector {
     if (this.z) {
       throw Error("Heading doesn't apply to 3d vectors as there are atleast 2 angles and one linear coordinate.");
     } else {
-      return Math.atan(this.y/this.x);
+      return Math.atan2(this.y, this.x);
     }
   }
 

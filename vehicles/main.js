@@ -1,19 +1,29 @@
-import {Sketch, random, Calculations, Vector, Canvas} from "../utils/utils.js";
-import Vehicle from "./vehicle.js";
-
-const count = 25;
-var vehicles = [];
-for (var i = 0; i < count; i++) {
-  vehicles.push(new Vehicle());
-}
+import {Sketch, random, Calculations, Vector, Canvas, rgb, hsl} from "../utils/utils.js";
+import {Population, Vehicle} from "./vehicle.js";
 
 var s = new Sketch("gameCanvas");
 // s.canvas.setMode("CENTER");
 var canvas = s.canvas;
 
+var population = new Population(canvas, 1);
+const foodcount = 100;
+var food = [];
+for (var i = 0; i < foodcount; i++) {
+  food.push(new Vector(random.randint(0, canvas.width), random.randint(0, canvas.height)));
+}
+
 var m = new Vector(canvas.width/2, canvas.height/2);
 
 document.addEventListener("mousemove", event_mousemove);
+document.addEventListener("mousedown", event_mousedown);
+
+function event_mousedown(event) {
+  const r = canvas.canvas.getBoundingClientRect();
+  const x = event.clientX - r.left;
+  const y = event.clientY - r.top;
+
+  //vehicles.push(new Vehicle(x, y));
+}
 
 function event_mousemove(event) {
   const r = canvas.canvas.getBoundingClientRect();
@@ -26,15 +36,25 @@ function event_mousemove(event) {
   m.y = y;
 }
 
-//console.log(vehicles);
+console.log(Calculations.lerp(80, 20, 0.5));
 s.draw(function () {
-  canvas.clear();
+  canvas.clear(hsl(0, 0, 15));
 
-  for (var v of vehicles) {
-    canvas.drawCircle(v.position.x, v.position.y, v.perception);
-    v.behavior(vehicles);
-    v.update(canvas);
-    v.draw(canvas);
+  population.draw_boundary();
+
+  // while (food.length < foodcount) {
+  //   food.push(new Vector(random.randint(0, canvas.width), random.randint(0, canvas.height)));
+  // }
+  for (var f of food) {
+    canvas.drawPoint(f.x, f.y, 3, "green");
+  }
+
+  if (!population.extinct()) {
+    population.behavior(food);
+    population.update();
+    population.draw();
+  } else {
+    population.newGeneration();
   }
 
 })

@@ -16,11 +16,12 @@ class FK_Krypto {
     }
     this.plain = temp;
     this.secret = "";
+
+    console.log("cleared:", this.plain);
   }
 
   caesar(key) {
     key = parseInt(key);
-    this.clear_string();
     var plainalphabet = "abcdefghijklmnopqrstuvwxyz";
     for (var i = 0; i < this.plain.length; i++) {
 
@@ -40,7 +41,7 @@ class FK_Krypto {
       if (newletter_pos > 25) {
         newletter_pos = newletter_pos % 26;
       }
-      console.log("newletter_pos: " + newletter_pos + ", adding letter: " + plainalphabet.charAt(newletter_pos));
+      //console.log("newletter_pos: " + newletter_pos + ", adding letter: " + plainalphabet.charAt(newletter_pos));
 
       this.secret += plainalphabet.charAt(newletter_pos);
 
@@ -50,6 +51,7 @@ class FK_Krypto {
 
   set_plain(text) {
     this.plain = text;
+    this.clear_string();
   }
 }
 

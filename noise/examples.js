@@ -1,4 +1,4 @@
-import {Sketch, random, Calculations, Noise, Vector2} from "../utils/utils.js";
+import {random, Calculations, Noise, Vector2} from "../utils/utils.js";
 
 var noise = new Noise();
 const noiseScale = 0.02;

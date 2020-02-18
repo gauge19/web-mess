@@ -93,6 +93,10 @@ function seed (seed) {
 
 seed(Math.random());
 
+
+/**
+ * Noise class
+ */
 export default class Noise {
 
   // 2D simplex noise

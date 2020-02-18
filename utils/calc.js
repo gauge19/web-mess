@@ -42,6 +42,21 @@ export default class Calculations {
     return Math.max(Math.min(n, high), low);
   }
 
+
+  /**
+   * @static Calculates a number between two numbers at a specific increment.
+   *
+   * @param  {number} start First number
+   * @param  {number} end   Second Number
+   * @param  {number} step  Increment - Should be between 0 and 1, 0.5 would be half-way.
+   * @return {number}       Interpolated value
+   */
+  static lerp(start, end, step) {
+    step = this.constrain(step, 0, 1);
+
+    return start + (end-start) * step;
+  }
+
   /**
    * Converts angle theta into 2 dimensional coordinates on a circle.
    * @param {number} r Radius of the sphere.
