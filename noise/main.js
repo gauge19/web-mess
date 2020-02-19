@@ -6,24 +6,19 @@ var s = new Sketch("gameCanvas");
 
 var noise = new Noise();
 
-s.canvas.canvas.width = 300;
-s.canvas.canvas.height = 300;
+s.canvas.canvas.width = 600;
+s.canvas.canvas.height = 400;
 var ctx = s.canvas.context;
 
 var yoff = 0;
 
-var points = noise2d(s);
-console.log(points.length);
+var imageData = noise2d(s);
 s.canvas.background = "black";
 s.GAMESPEED = 1;
 
 s.draw(function () {
   s.canvas.clear();
 
-  // yoff = noise1d(s, yoff);
-  for (var point of points) {
-    let c = point.color;
-    s.canvas.drawPoint(point.x, point.y, 1, "rgba("+c+", "+c+", "+c+")");
-  }
+  s.canvas.context.putImageData(imageData, 0, 0);
 
 });

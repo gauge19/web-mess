@@ -7,6 +7,8 @@ function setup() {
 
 function draw() {
   background(0);
+  
+
   // Draw the left half of image
   for (let y = 0; y < height - 30; y++) {
     for (let x = 0; x < width / 2; x++) {
