@@ -53,17 +53,29 @@ export function noise2d(s) {
   let height = s.canvas.height;
   let imageData = ctx.createImageData(width, height);
 
+  let inc = 0.005;
+  let yoff = 0;
+
   let data = imageData.data;
-  for (var x = 0; x < width; x++) {
-    for (var y = 0; y < height; y++) {
-      let v = noise.perlin2(x * noiseScale, y * noiseScale) * 255;
+  for (var y = 0; y < height; y++) {
+
+    let xoff = 0;
+
+    for (var x = 0; x < width; x++) {
+
+      let v = noise.simplex2(xoff, yoff);
+      v = Calculations.map(v, -1, 1, 0, 1) * 255;
+
       let indices = getColorIndicesForCoord(x, y, width);
-      for (var index of indices) {
+      for (let index of indices) {
         data[index] = v;
       }
       data[indices[3]] = 255; // set alpha value to 255
+
+      xoff += inc;
     }
+    yoff += inc;
   }
-  
+
   return imageData;
 }
