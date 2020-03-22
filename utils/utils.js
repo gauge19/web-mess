@@ -111,6 +111,7 @@ export class Canvas {
    * @param {number} y2 Y coordinate of point B
    * @param {number} x3 X coordinate of point C
    * @param {number} y3 Y coordinate of point C
+   * @param {string} drawmode Whether the triangle should be filled or not, STROKE is default.
    * @param {string} color Color of the triangle, red is default.
    */
   drawTriangle(x1, y1, x2, y2, x3, y3, drawmode="STROKE", color="red") {

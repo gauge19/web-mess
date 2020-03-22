@@ -1,0 +1,454 @@
+[
+    {
+        "tripId": "1|5600|53|86|20032020",
+        "stop": {
+            "type": "stop",
+            "id": "900000176533",
+            "name": "Roseggerstr.",
+            "location": {
+                "type": "location",
+                "id": "900176533",
+                "latitude": 52.480293,
+                "longitude": 13.601057
+            },
+            "products": {
+                "suburban": false,
+                "subway": false,
+                "tram": true,
+                "bus": true,
+                "ferry": false,
+                "express": false,
+                "regional": false
+            }
+        },
+        "when": "2020-03-20T17:38:00+01:00",
+        "direction": "Ersatz Richtung Rathaus Köpenick",
+        "line": {
+            "type": "line",
+            "id": "62",
+            "fahrtNr": "9456",
+            "name": "62",
+            "public": true,
+            "mode": "bus",
+            "product": "bus",
+            "operator": {
+                "type": "operator",
+                "id": "berliner-verkehrsbetriebe",
+                "name": "Berliner Verkehrsbetriebe"
+            },
+            "symbol": null,
+            "nr": 62,
+            "metro": false,
+            "express": false,
+            "night": false
+        },
+        "remarks": [
+            {
+                "type": "hint",
+                "code": "bf",
+                "text": "barrier-free"
+            },
+            {
+                "id": "81700",
+                "type": "warning",
+                "summary": ".Front Doors closed",
+                "text": "The front doors of BVG-buses remain closed. Tickets are no longer available on the bus. Please buy tickets from vending machines or kiosks or use e-tickets for mobile phones (https://www.bvg.de/en/Tickets/Mobile).",
+                "priority": 100,
+                "category": null,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-12T03:30:00+01:00",
+                "validUntil": "2020-12-12T00:00:00+01:00",
+                "modified": "2020-03-17T14:04:54+01:00"
+            },
+            {
+                "id": "79859",
+                "type": "warning",
+                "summary": ".Ersatzverkehr wegen Bauarbeiten",
+                "text": "Für die Tramlinien 62/63 besteht in beiden Richtungen zwischen Freiheit und S Mahldorf Ersatzverkehr mit Bussen. Der Ersatzverkehr wird mit barrierefreien Fahrzeugen bedient und hält an den ausgewiesenen Ersatzhaltestellen. Bitte planen Sie eine längere Fahrzeit ein und beachten Sie, dass eine Fahrradmitnahme in den Bussen nicht möglich ist.",
+                "priority": 100,
+                "category": 1,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-02T01:30:00+01:00",
+                "validUntil": "2020-06-02T02:00:00+02:00",
+                "modified": "2020-02-24T14:05:12+01:00"
+            },
+            {
+                "id": "82156",
+                "type": "warning",
+                "summary": ".Modified Bus service",
+                "text": "MetroBus lines run every 10, all other lines every 20 minutes. The timetable data is still being updated.",
+                "priority": 100,
+                "category": 2,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-18T04:00:00+01:00",
+                "validUntil": "2020-04-19T23:59:00+02:00",
+                "modified": "2020-03-20T08:37:39+01:00"
+            }
+        ],
+        "delay": null,
+        "platform": null
+    },
+    {
+        "tripId": "1|5627|19|86|20032020",
+        "stop": {
+            "type": "stop",
+            "id": "900000176533",
+            "name": "Roseggerstr.",
+            "location": {
+                "type": "location",
+                "id": "900176533",
+                "latitude": 52.480293,
+                "longitude": 13.601057
+            },
+            "products": {
+                "suburban": false,
+                "subway": false,
+                "tram": true,
+                "bus": true,
+                "ferry": false,
+                "express": false,
+                "regional": false
+            }
+        },
+        "when": "2020-03-20T17:41:00+01:00",
+        "direction": "Ersatz Richtung S Mahlsdorf",
+        "line": {
+            "type": "line",
+            "id": "62",
+            "fahrtNr": "9495",
+            "name": "62",
+            "public": true,
+            "mode": "bus",
+            "product": "bus",
+            "operator": {
+                "type": "operator",
+                "id": "berliner-verkehrsbetriebe",
+                "name": "Berliner Verkehrsbetriebe"
+            },
+            "symbol": null,
+            "nr": 62,
+            "metro": false,
+            "express": false,
+            "night": false
+        },
+        "remarks": [
+            {
+                "type": "hint",
+                "code": "bf",
+                "text": "barrier-free"
+            },
+            {
+                "id": "81700",
+                "type": "warning",
+                "summary": ".Front Doors closed",
+                "text": "The front doors of BVG-buses remain closed. Tickets are no longer available on the bus. Please buy tickets from vending machines or kiosks or use e-tickets for mobile phones (https://www.bvg.de/en/Tickets/Mobile).",
+                "priority": 100,
+                "category": null,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-12T03:30:00+01:00",
+                "validUntil": "2020-12-12T00:00:00+01:00",
+                "modified": "2020-03-17T14:04:54+01:00"
+            },
+            {
+                "id": "79859",
+                "type": "warning",
+                "summary": ".Ersatzverkehr wegen Bauarbeiten",
+                "text": "Für die Tramlinien 62/63 besteht in beiden Richtungen zwischen Freiheit und S Mahldorf Ersatzverkehr mit Bussen. Der Ersatzverkehr wird mit barrierefreien Fahrzeugen bedient und hält an den ausgewiesenen Ersatzhaltestellen. Bitte planen Sie eine längere Fahrzeit ein und beachten Sie, dass eine Fahrradmitnahme in den Bussen nicht möglich ist.",
+                "priority": 100,
+                "category": 1,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-02T01:30:00+01:00",
+                "validUntil": "2020-06-02T02:00:00+02:00",
+                "modified": "2020-02-24T14:05:12+01:00"
+            },
+            {
+                "id": "82156",
+                "type": "warning",
+                "summary": ".Modified Bus service",
+                "text": "MetroBus lines run every 10, all other lines every 20 minutes. The timetable data is still being updated.",
+                "priority": 100,
+                "category": 2,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-18T04:00:00+01:00",
+                "validUntil": "2020-04-19T23:59:00+02:00",
+                "modified": "2020-03-20T08:37:39+01:00"
+            }
+        ],
+        "delay": null,
+        "platform": null
+    },
+    {
+        "tripId": "1|5600|50|86|20032020",
+        "stop": {
+            "type": "stop",
+            "id": "900000176533",
+            "name": "Roseggerstr.",
+            "location": {
+                "type": "location",
+                "id": "900176533",
+                "latitude": 52.480293,
+                "longitude": 13.601057
+            },
+            "products": {
+                "suburban": false,
+                "subway": false,
+                "tram": true,
+                "bus": true,
+                "ferry": false,
+                "express": false,
+                "regional": false
+            }
+        },
+        "when": "2020-03-20T17:48:00+01:00",
+        "direction": "Ersatz Richtung Rathaus Köpenick",
+        "line": {
+            "type": "line",
+            "id": "62",
+            "fahrtNr": "9456",
+            "name": "62",
+            "public": true,
+            "mode": "bus",
+            "product": "bus",
+            "operator": {
+                "type": "operator",
+                "id": "berliner-verkehrsbetriebe",
+                "name": "Berliner Verkehrsbetriebe"
+            },
+            "symbol": null,
+            "nr": 62,
+            "metro": false,
+            "express": false,
+            "night": false
+        },
+        "remarks": [
+            {
+                "type": "hint",
+                "code": "bf",
+                "text": "barrier-free"
+            },
+            {
+                "id": "81700",
+                "type": "warning",
+                "summary": ".Front Doors closed",
+                "text": "The front doors of BVG-buses remain closed. Tickets are no longer available on the bus. Please buy tickets from vending machines or kiosks or use e-tickets for mobile phones (https://www.bvg.de/en/Tickets/Mobile).",
+                "priority": 100,
+                "category": null,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-12T03:30:00+01:00",
+                "validUntil": "2020-12-12T00:00:00+01:00",
+                "modified": "2020-03-17T14:04:54+01:00"
+            },
+            {
+                "id": "79859",
+                "type": "warning",
+                "summary": ".Ersatzverkehr wegen Bauarbeiten",
+                "text": "Für die Tramlinien 62/63 besteht in beiden Richtungen zwischen Freiheit und S Mahldorf Ersatzverkehr mit Bussen. Der Ersatzverkehr wird mit barrierefreien Fahrzeugen bedient und hält an den ausgewiesenen Ersatzhaltestellen. Bitte planen Sie eine längere Fahrzeit ein und beachten Sie, dass eine Fahrradmitnahme in den Bussen nicht möglich ist.",
+                "priority": 100,
+                "category": 1,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-02T01:30:00+01:00",
+                "validUntil": "2020-06-02T02:00:00+02:00",
+                "modified": "2020-02-24T14:05:12+01:00"
+            },
+            {
+                "id": "82156",
+                "type": "warning",
+                "summary": ".Modified Bus service",
+                "text": "MetroBus lines run every 10, all other lines every 20 minutes. The timetable data is still being updated.",
+                "priority": 100,
+                "category": 2,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-18T04:00:00+01:00",
+                "validUntil": "2020-04-19T23:59:00+02:00",
+                "modified": "2020-03-20T08:37:39+01:00"
+            }
+        ],
+        "delay": 2400,
+        "platform": null
+    },
+    {
+        "tripId": "1|5600|52|86|20032020",
+        "stop": {
+            "type": "stop",
+            "id": "900000176533",
+            "name": "Roseggerstr.",
+            "location": {
+                "type": "location",
+                "id": "900176533",
+                "latitude": 52.480293,
+                "longitude": 13.601057
+            },
+            "products": {
+                "suburban": false,
+                "subway": false,
+                "tram": true,
+                "bus": true,
+                "ferry": false,
+                "express": false,
+                "regional": false
+            }
+        },
+        "when": "2020-03-20T18:17:00+01:00",
+        "direction": "Ersatz Richtung Rathaus Köpenick",
+        "line": {
+            "type": "line",
+            "id": "62",
+            "fahrtNr": "9456",
+            "name": "62",
+            "public": true,
+            "mode": "bus",
+            "product": "bus",
+            "operator": {
+                "type": "operator",
+                "id": "berliner-verkehrsbetriebe",
+                "name": "Berliner Verkehrsbetriebe"
+            },
+            "symbol": null,
+            "nr": 62,
+            "metro": false,
+            "express": false,
+            "night": false
+        },
+        "remarks": [
+            {
+                "type": "hint",
+                "code": "bf",
+                "text": "barrier-free"
+            },
+            {
+                "id": "81700",
+                "type": "warning",
+                "summary": ".Front Doors closed",
+                "text": "The front doors of BVG-buses remain closed. Tickets are no longer available on the bus. Please buy tickets from vending machines or kiosks or use e-tickets for mobile phones (https://www.bvg.de/en/Tickets/Mobile).",
+                "priority": 100,
+                "category": null,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-12T03:30:00+01:00",
+                "validUntil": "2020-12-12T00:00:00+01:00",
+                "modified": "2020-03-17T14:04:54+01:00"
+            },
+            {
+                "id": "79859",
+                "type": "warning",
+                "summary": ".Ersatzverkehr wegen Bauarbeiten",
+                "text": "Für die Tramlinien 62/63 besteht in beiden Richtungen zwischen Freiheit und S Mahldorf Ersatzverkehr mit Bussen. Der Ersatzverkehr wird mit barrierefreien Fahrzeugen bedient und hält an den ausgewiesenen Ersatzhaltestellen. Bitte planen Sie eine längere Fahrzeit ein und beachten Sie, dass eine Fahrradmitnahme in den Bussen nicht möglich ist.",
+                "priority": 100,
+                "category": 1,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-02T01:30:00+01:00",
+                "validUntil": "2020-06-02T02:00:00+02:00",
+                "modified": "2020-02-24T14:05:12+01:00"
+            },
+            {
+                "id": "82156",
+                "type": "warning",
+                "summary": ".Modified Bus service",
+                "text": "MetroBus lines run every 10, all other lines every 20 minutes. The timetable data is still being updated.",
+                "priority": 100,
+                "category": 2,
+                "products": {
+                    "suburban": false,
+                    "subway": true,
+                    "tram": false,
+                    "bus": false,
+                    "ferry": false,
+                    "express": false,
+                    "regional": false
+                },
+                "validFrom": "2020-03-18T04:00:00+01:00",
+                "validUntil": "2020-04-19T23:59:00+02:00",
+                "modified": "2020-03-20T08:37:39+01:00"
+            }
+        ],
+        "delay": 2940,
+        "platform": null
+    }
+]

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Find nearest station</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <h1>Find nearest BVG station around me</h1>
+    <p>Click button below to geolocate</p>
+    <button id="geolocate" onclick="getGeolocation()">Find stations</button><br><br>
+    <span id="mapholder"></span><br>
+
+    <table id="stations">
+        <tr>
+            <td>Nr.</td>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Distance in m</th>
+        </tr>
+    </table>
+
+</body>
+
+</html>

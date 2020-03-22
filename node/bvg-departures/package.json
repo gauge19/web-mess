@@ -1,0 +1,22 @@
+{
+  "name": "bvg-departures",
+  "version": "1.0.0",
+  "description": "Finds nearest BVG stations around you and can show their upcoming departures.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "webscraping"
+  ],
+  "author": "gauge19",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "pug": "^2.0.4"
+  }
+}

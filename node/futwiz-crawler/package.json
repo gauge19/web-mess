@@ -1,0 +1,17 @@
+{
+  "name": "futwiz-crawler",
+  "version": "1.0.0",
+  "description": "Crawls 'futwiz.com' for FIFA career mode data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webcrawling"
+  ],
+  "author": "gauge19",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3"
+  }
+}

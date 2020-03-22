@@ -20,22 +20,6 @@ export function noise1d(s, yoff) {
   return yoff += 0.003;
 }
 
-class Point {
-  constructor(x, y, v) {
-    this.x = x;
-    this.y = y;
-    this.v = v;
-  }
-
-  get alpha() {
-    return Calculations.map(this.v, -1, 1, 0, 1, true);
-  }
-
-  get color() {
-    return this.v*255;
-  }
-}
-
 function getColorIndicesForCoord(x, y, width) {
   var red = y * (width * 4) + x * 4;
   return [red, red + 1, red + 2, red + 3];
